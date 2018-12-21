@@ -22,6 +22,12 @@ exports.ftReqs = {
         "Accept" : "application/json",
         "Content-Type": "application/json"
     },
+    giftHeaders : {
+        'Accept': 'application/json;charset=UTF-8',
+        'X-FTS-client-token': process.env.FoodTecGiftCardKey,
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Content-Length': '42'
+    }
 }
 
 exports.getDeliveryArea = function(store){
@@ -62,4 +68,32 @@ exports.getDeliveryAreaReqs = function(){
         );
     }
     return requests;
+}
+
+exports.getGiftCardRequests = function(cardNum, pin, query){
+    let dataString = `{"cardNumber":"${cardNum}","pin":"${pin}"}`;
+    let options = {
+            url: `https://gift.foodtecsolutions.com/rest/v2/giftcard/info/${query}`,
+            simple: false, 
+            method: 'POST',
+            headers: exports.ftReqs.giftHeaders,
+            body: dataString
+    };
+    
+    function callback(error, response, body){
+        if (!error && response.statusCode == 200){
+            console.log(body)
+        } else {
+            console.log(error)
+        }
+    }
+    
+    return request(options, callback)
+    .then((res) => {
+        let data = JSON.parse(res);
+        console.log(data)
+        return data;
+    }).catch((error) => {
+        return error
+    });
 }
