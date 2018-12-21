@@ -1,5 +1,5 @@
 const express = require('express'),
-      
+      logResponseTime = require('./controllers/util/response-time-logger'),
       app = express(),
       server = require('http').createServer(app),
       io = require('socket.io').listen(server),
@@ -19,6 +19,8 @@ const express = require('express'),
       promise = require('promise'),
       expressWs = require('express-ws')(app);
       
+app.use(logResponseTime);
+      
 const port = process.env.PORT;
       
 app.set('socketio', io);
@@ -29,7 +31,8 @@ const api_deliveryRoutes = require('./routes/api/delivery.js'),
       api_indexRoutes = require('./routes/api/index'),
       api_locationsRoutes = require('./routes/api/locations'),
       api_menuRoutes = require('./routes/api/menu')
-      
+
+
 app.use('/delivery', api_deliveryRoutes);
 app.use('/employment', api_employmentRoutes);
 app.use('/', api_indexRoutes);
