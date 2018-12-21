@@ -16,7 +16,7 @@ exports.ftReqs = {
         },
     headers: {
         "Accept" : "application/json",
-        "X-Fts-Api-Token": '4tl6n5u9h6mg8q3hrf3oqum3l9'
+        "X-Fts-Api-Token": process.env.FoodTecKey
     },
    storeHeaders: {
         "Accept" : "application/json",
@@ -45,4 +45,21 @@ exports.getDeliveryArea = function(store){
         }).catch((error) => {
             return error;
         })
+}
+
+exports.getDeliveryAreaReqs = function(){
+    const stores = ['downtown', 'uptown', 'duluth', 'seward', 'stpaul', 'hopkins', 'richfield', 'roseville', 'edenprairie'];
+    let requests = [];
+    for (let i = 0; i < stores.length; i++){
+        requests.push(
+            request({
+                url: `https://${stores[i]}.pizzaluce.com/ws/store/deliveryAreas`,
+                    cacheKey: `https://${stores[i]}.pizzaluce.com/ws/store/deliveryAreas`,
+                    cacheTTL: 100000,
+                    cacheLimit: 1000,
+                    headers: exports.ftReqs.storeHeaders
+            })    
+        );
+    }
+    return requests;
 }

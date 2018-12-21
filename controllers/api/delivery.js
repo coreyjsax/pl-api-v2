@@ -52,3 +52,7 @@ exports.get_one_area = (req, res) => {
         res.json(location)
     })
 }
+
+exports.get_all_areas = (req, res) => {
+    
+}

@@ -13,7 +13,7 @@ const express = require('express'),
       parser = require('parser'),
       request = require('request-promise-cache'),
       path = require('path'),
-      dotenv = require('dotenv'),
+      dotenv = require('dotenv').config(),
       promise = require('promise'),
       expressWs = require('express-ws')(app);
       
@@ -44,8 +44,6 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-
-
 
 module.exports = app;
 
