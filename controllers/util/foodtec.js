@@ -91,7 +91,6 @@ exports.getGiftCardRequests = function(cardNum, pin, query){
     return request(options, callback)
     .then((res) => {
         let data = JSON.parse(res);
-        console.log(data)
         return data;
     }).catch((error) => {
         return error
