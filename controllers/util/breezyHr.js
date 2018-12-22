@@ -7,12 +7,16 @@ let breezyPositions = {};
 let breezyHrReqs = {
     base: 'https://breezy.hr/public/api/v3',
     sign_in: 'https://breezy.hr/public/api/v3/signin',
-    user_details: 'https://breezy.hr/public/api/v3/user/details'
+    user_details: 'https://breezy.hr/public/api/v3/user/details',
+    company: 'https://breezy.hr/public/api/v3/company/'
 }
 
 exports.getUser = function(){
     return request({
        url: breezyHrReqs.sign_in,
+       cacheKey: breezyHrReqs.sign_in,
+       cacheTTL: 10000,
+       cacheLimit: 50,
        body: "{\"email\":\"corey@pizzaluce.com\",\"password\":\"Summit123\"}",
        headers: {
            "Content-Type": "application/json"
@@ -31,6 +35,9 @@ exports.getUserId = function(user){
 exports.getUserDetails = function(user){
     return request({
         url: breezyHrReqs.user_details,
+        cacheKey: breezyHrReqs.user_details,
+        cacheTTL: 10000,
+        cacheLimit: 50,
         headers: {
             Authorization: user.access_token,
             "Content-Type": "application/json"
@@ -45,6 +52,22 @@ exports.parseUserDetails = function(userDetailsRes){
     return result;
 }
 
+exports.getPositions = function(state) {
+    return request({
+        url: breezyHrReqs.company + breezyKeys.company_id + `/positions${state}`,
+        cacheKey: breezyHrReqs.company + breezyKeys.company_id + `/positions${state}`,
+        cacheTTL: 10000,
+        cacheLimit: 50,
+        headers: {
+            Authorization: breezyKeys.access_token,
+            "Content-Type": "application/json"
+        }
+    }).then((res) => {
+        let data = JSON.parse(res);
+        return data;
+    })
+}
+
 exports.main = function(params){
     return exports.getUser()
     .then(exports.getUserId)
@@ -52,3 +75,4 @@ exports.main = function(params){
     .then(exports.parseUserDetails)
 }
 
+exports.main()
