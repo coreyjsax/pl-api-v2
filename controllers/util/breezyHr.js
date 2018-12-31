@@ -68,7 +68,6 @@ exports.getPositions = function(state) {
     })
 }
 
-
 exports.main = function(params){
     return exports.getUser()
     .then(exports.getUserId)
