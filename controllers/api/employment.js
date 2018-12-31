@@ -45,7 +45,7 @@ exports.get_positions_by_loc = (req, res) => {
         res.json(filtered)
     })
 }
-
+//Get position categories and count
 exports.get_positions_categories = (req, res) => {
     let state = '';
     return breezy.getPositions(state)
@@ -77,5 +77,43 @@ exports.get_positions_categories = (req, res) => {
         return list;
     }).then((list) => {
         res.json(list)
+    })
+}
+
+//Get Positions by Category
+exports.get_positions_by_category = (req, res) => {
+    let state = '';
+    return breezy.getPositions(state)
+    .then((data) => {
+        for (let i = 0; i < data.length; i++) {
+            data[i].description.replace(/<\/?[^>]+>/gi, '')
+            console.log(data[i].description)
+        }
+        if (req.params.department_id != "All") {
+            const department = req.params.department_id;
+            let filtered = data.filter(function(el){
+                return el.department == department;
+            });
+            let count = filtered.length;
+            let object = {
+                count: count,
+                jobs: filtered
+            }
+            return object;
+        } else {
+            let object = {
+                count: data.length,
+                jobs: data
+            }
+            return object
+        }
+    }).then((object) => {
+        res.json(object)
+    })
+}
+
+Array.prototype.unique = function(){
+    return this.filter(function(value, index, self) {
+        return self.indexOf(value) === index;
     })
 }

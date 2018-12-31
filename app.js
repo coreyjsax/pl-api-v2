@@ -50,6 +50,9 @@ app.use(function(req, res, next) {
   next();
 });
 
+mongoose.connect(process.env.DB)
+
+
 
 module.exports = app;
 

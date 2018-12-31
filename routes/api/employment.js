@@ -8,7 +8,7 @@ const api_employment_controller = require('../../controllers/api/employment');
 router.get('/test', api_employment_controller.test)
 
 //Get Company Position Categories
-router.get('/categories', api_employment_controller.get_positions_categories)
+router.get('/category', api_employment_controller.get_positions_categories)
 
 //Get all Positions
 router.get('/positions/all', api_employment_controller.get_all_positions)
@@ -21,6 +21,7 @@ router.get('/positions/:location', api_employment_controller.get_positions_by_lo
 
 //Filter Positions by Location && State
 router.get('/positions/:location/:state', api_employment_controller.get_positions_by_loc)
+
 
 
 

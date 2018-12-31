@@ -17,7 +17,7 @@ exports.getUser = function(){
        cacheKey: breezyHrReqs.sign_in,
        cacheTTL: 10000,
        cacheLimit: 50,
-       body: "{\"email\":\"corey@pizzaluce.com\",\"password\":\"Summit123\"}",
+       body: `{\"email\":\"${process.env.BreezyUser}\",\"password\":\"${process.env.BreezyPassword}\"}`,
        headers: {
            "Content-Type": "application/json"
        },
@@ -67,6 +67,7 @@ exports.getPositions = function(state) {
         return data;
     })
 }
+
 
 exports.main = function(params){
     return exports.getUser()
