@@ -45,6 +45,24 @@ exports.get_positions_by_loc = (req, res) => {
         res.json(filtered)
     })
 }
+
+// Get all positions by location processor
+exports.get_location_positions = (locId) => {
+    let state = '?state=published';
+    return breezy.getPositions(state)
+    .then((data) => {
+        let location = locId;
+        location = location.toUpperCase();
+        let filtered = data.filter((el) => {
+            return el.requisition_id === location;
+        });
+        return filtered;
+    }).catch((error) => {
+        return error;
+    });
+};
+
+
 //Get position categories and count
 exports.get_positions_categories = (req, res) => {
     let state = '';

@@ -29,6 +29,9 @@ exports.getUntappdLocations = () => {
 exports.getUntappdMenusByLocation = (id) => {
     return request({
         url: `${baseUrl}locations/${id}/menus`,
+        cacheKey: `${baseUrl}locations/${id}/menus`,
+        cacheTTL: 10000,
+        cacheLimit: 10000,
         headers: headers
     }).then((res) => {
         let data = JSON.parse(res);
@@ -61,6 +64,9 @@ exports.getUntappdMenuById = (menuId) => {
         for (let i = 0; i < menuData.menus.length; i++){
                 var req = {
                     url: `${baseUrl}menus/${menuData.menus[i].id}?full=true`,
+                    cacheKey: `${baseUrl}menus/${menuData.menus[i].id}?full=true`,
+                    cacheTTL: 100000,
+                    cacheLimit: 100,
                     headers: headers,
                     json: true
                 };

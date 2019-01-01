@@ -1,6 +1,7 @@
 const Location = require('../../models/location');
 const request = require('request-promise-cache');
 const untappd = require('../../controllers/util/untappd');
+const employment = require('../../controllers/api/employment');
 
 
 
@@ -26,6 +27,7 @@ exports.get_locations = (req, res) => {
 //Get location by ID
 exports.get_location_by_id = (req, res) => {
     let payload = {};
+    //Get location from database
     Location.findById(req.params.locId, (err, doc) => {
         if (err) {
             if (!doc){
@@ -36,15 +38,21 @@ exports.get_location_by_id = (req, res) => {
             }
         } else {
             payload.location = doc;
-            var untappdId = doc.meta_data.untappd_id;
-            var untappd_menus = untappd.getAllUntappdFullMenusByLocation(untappdId);
-            Promise.all([untappd_menus])
-            .then(([untappd]) => {
+            let untappdId = doc.meta_data.untappd_id;
+            let breezyId = doc.meta_data.breezy_id;
+            //get untappd menus from api
+            let untappd_menus = untappd.getAllUntappdFullMenusByLocation(untappdId);
+            //get breezy positions from api
+            let breezy_positions = employment.get_location_positions(breezyId);
+            Promise.all([untappd_menus, breezy_positions])
+            .then(([untappd, breezy]) => {
                 var menus = [];
+                var positions = [];
                 for (let i=0; i < untappd.length; i++){
                     menus.push(untappd[i].menu);
                 }
                 payload.untappd_menus = menus;
+                payload.breezy_positions = breezy;
                 return payload;
             }).then((payload) => {
                 res.json(payload);
@@ -91,6 +99,3 @@ exports.untappd_get_locations = (req, res) => {
     })
 }
 
-exports.untappd_get_menus_by_location = (req, res) => {
-    
-}
