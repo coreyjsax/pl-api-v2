@@ -33,7 +33,9 @@ var LocationSchema = new mongoose.Schema({
             foodtec_id: String,
             coordinates: {
                 lng: Number,
-                lat: Number
+                lat: Number,
+                radius: Number,
+                online_ordering_url: String
             },
             menu_boards: {
                 untappd: [], //array of menu ids

@@ -133,3 +133,7 @@ exports.get_all_areas = (req, res) => {
         res.json(data)
     })
 }
+
+exports.get_all_areas_processor = () => {
+    
+}
