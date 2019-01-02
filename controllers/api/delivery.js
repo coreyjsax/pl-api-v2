@@ -1,10 +1,11 @@
 const request = require('request-promise-cache');
 const ft = require('../../controllers/util/foodtec');
+const Location = require('../../models/location');
+
 
 exports.get_one_area = (req, res) => {
     Promise.all([ft.getDeliveryArea(req.params.store)])
     .then((data) => {
-        console.log(data)
         return data;
     }).then((data)=> {
         let store = req.params.store;
@@ -52,6 +53,7 @@ exports.get_one_area = (req, res) => {
         res.json(location)
     })
 }
+
 
 exports.get_all_areas = (req, res) => {
     let requests = ft.getDeliveryAreaReqs();
@@ -133,7 +135,42 @@ exports.get_all_areas = (req, res) => {
         res.json(data)
     })
 }
-
-exports.get_all_areas_processor = () => {
-    
+//refactored get all areas requests
+exports.get_all_areas_processor = (req, res) => {
+    let requests = [];
+    const headers = {
+        "Accept" : "application/json",
+        "X-Fts-Api-Token": process.env.FoodTecKey
+    };
+    Location.find({}, (err, docs) => {
+        let location_names = [];
+        for (let i = 0; i < docs.length; i++){
+            location_names.push(docs[i].meta_data.foodtec_id)
+        }
+        return location_names; 
+    }).then((location_names) => {
+        let data = {
+            location_names: location_names,
+            requests: []
+        }
+        for (let j = 0; j < location_names.length; j++){
+            let req = {
+                url: `https://${location_names[j].meta_data.foodtec_id}.pizzaluce.com/ws/store/deliveryAreas`,
+                cacheKey: `https://${location_names[j].meta_data.foodtec_id}.pizzaluce.com/ws/store/deliveryAreas`,
+                cacheTTL: 100000,
+                cacheLimit: 1000,
+                headers: headers,
+                json: true
+            };
+            data.requests.push(request(req));
+        }
+        return data;
+    }).then((data) => {
+        return Promise.all(data.requests);
+    }).then((args) => {
+        
+        //return args;
+        res.json(args)
+    }) 
 }
+

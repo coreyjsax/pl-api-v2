@@ -1,4 +1,5 @@
 const request = require('request-promise-cache');
+const Locations = require('../../models/location');
 
 exports.ftReqs = {
     base: `https://marketing.foodtecsolutions.com/publicapi/stores/locations?merchant=Pizza%20Luce&`,
@@ -34,8 +35,8 @@ exports.getDeliveryArea = function(store){
     return request({
         url: `https://${store}.pizzaluce.com/ws/store/deliveryAreas`,
         cacheKey: `https://${store}.pizzaluce.com/ws/store/deliveryAreas`,
-        cacheTTL: 10000,
-        cacheLimit: 100,
+        cacheTTL: 100000,
+        cacheLimit: 1000,
         headers: exports.ftReqs.storeHeaders
     }).then((res) => {
         let deliveryArea = JSON.parse(res);
@@ -70,6 +71,10 @@ exports.getDeliveryAreaReqs = function(){
     return requests;
 }
 
+exports.getAllDeliveryAreas = (array) => {
+    
+}
+
 exports.getGiftCardRequests = function(cardNum, pin, query){
     let dataString = `{"cardNumber":"${cardNum}","pin":"${pin}"}`;
     let options = {
@@ -96,3 +101,4 @@ exports.getGiftCardRequests = function(cardNum, pin, query){
         return error
     });
 }
+
