@@ -151,6 +151,37 @@ exports.location_get_by_id_untappd_menu_by_id_full = (req, res) => {
     });
 };
 
+//GET - Get Location by ID and Location Delivery Area //
+exports.location_get_by_id_delivery_area = (req, res) => {
+    let payload = {};
+    Location.findById(req.params.location_id, (err, doc) => {
+        if (err){
+            if (!doc){
+                 res.status(404).send({status: 404, message: `location ${req.params.id} not found`});
+            } else {
+                res.status(500).send(server_error);
+            }
+        } else {
+            if (doc.length === 0) {
+                 res.status(404).send({status: 404, message: `location ${req.params.id} not found`});
+            } else {
+                payload.location = doc;
+                let delivery_id = doc.meta_data.foodtec_id;
+                let deliveryArea = foodtec.getDeliveryArea(delivery_id);
+                Promise.all([deliveryArea])
+                .then((delivery) => {
+                    payload.delivery_area = delivery;
+                    return payload;
+                }).then((payload) => {
+                    res.json(payload);
+                }).catch((error) => {
+                    res.status(500).send({status: 500, message: error});
+                })
+            }
+        }
+    })
+}
+
 //Post a Location
 exports.location_create_post = (req, res) => {
     let new_location = {

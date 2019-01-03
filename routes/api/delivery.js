@@ -6,7 +6,6 @@ const api_delivery_controller = require('../../controllers/api/delivery');
 
 router.get('/area/all', api_delivery_controller.get_all_areas);
 
-
 router.get('/area/:store/:color', api_delivery_controller.get_one_area);
 
 
