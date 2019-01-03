@@ -3,7 +3,7 @@ const request = require('request-promise-cache');
 const untappd = require('../../controllers/util/untappd');
 const employment = require('../../controllers/api/employment');
 const foodtec = require('../../controllers/util/foodtec');
-
+const server_error = {message: 'There was a problem...'};
 
 //Get all locations
 exports.get_locations = (req, res) => {
@@ -66,6 +66,91 @@ exports.get_location_by_id = (req, res) => {
     });
 };
 
+//GET - Get Location by Tag Search Term //
+exports.location_get_search_tag = (req, res) => {
+    Location.find(req.query, (err, docs) => {
+        if (err){
+            if (!docs){
+                res.status(404).send({status: 404, message: `No location found matching this query`});
+            } else {
+                res.status(500).send(server_error);
+            }
+        } else {
+            if (docs.length === 0){
+                res.status(404).send({status: 404, message: `No location found matching this query`});
+            } else {
+                res.json(docs);
+            }
+        }
+    })
+}
+
+//GET - Get Location by ID and Untappd Menus //
+exports.location_get_by_id_untappd = (req, res) => {
+    let payload = {};
+    Location.findById(req.params.id, (err, doc) => {
+        if (err){
+            if (!doc){
+                res.status(404).send({status: 404, message: `location ${req.params.id} not found`});
+            } else {
+                res.status(500).send(server_error);
+            }
+        } else {
+            if (doc.length === 0) {
+                res.status(404).send({status: 404, message: `location ${req.params.id} not found`});
+            } else {
+                payload.location = doc;
+                let untappdId = doc.meta_data.untappd_id;
+                let untappd_menus = untappd.getAllUntappdFullMenusByLocation(untappdId);
+                Promise.all([untappd_menus])
+                .then(([untappd]) => {
+                    let menus =[];
+                    for (let i = 0; i < untappd.length; i++) {
+                        menus.push(untappd[i].menu);
+                    }
+                    payload.untappd_menus = menus;
+                    return payload;
+                }).then((paylaod) => {
+                    res.json(payload);
+                }).catch((error) => {
+                    res.status(500).send({status: 500, message: error});
+                });
+            }
+        }
+    });
+};
+
+//GET - Get Location by ID and Full Untappd Menu by ID //
+exports.location_get_by_id_untappd_menu_by_id_full = (req, res) => {
+    let payload = {};
+    Location.findById(req.params.location_id, (err, doc) => {
+        if (err){
+            if (!doc){
+                res.status(404).send({status: 404, message: `location ${req.params.id} not found`});
+            } else {
+                res.status(500).send(server_error);
+            }
+        } else {
+            if (doc.length === 0) {
+                res.status(404).send({status: 404, message: `location ${req.params.id} not found`});
+            } else {
+                payload.location = doc;
+                let menu_id = req.params.menu_id;
+                let untappd_menu = untappd.getUntappdMenuById(menu_id);
+                Promise.all([untappd_menu])
+                .then(([untappd]) => {
+                    payload.untappd_menu = untappd;
+                    return payload;
+                }).then((payload) => {
+                    res.json(payload);
+                }).catch((error) => {
+                    res.status(500).send({status: 500, message: error});
+                });
+            }
+        } 
+    });
+};
+
 //Post a Location
 exports.location_create_post = (req, res) => {
     let new_location = {
@@ -91,14 +176,14 @@ exports.location_create_post = (req, res) => {
             upload_date: Date.now(),
             url: './uploads/locations/' + req.file.filename
         }
-    }
-}
+    };
+};
 
 //Untappd 
 exports.untappd_get_locations = (req, res) => {
     return untappd.getUntappdLocations()
     .then((data) => {
         res.json(data);
-    })
-}
+    });
+};
 
