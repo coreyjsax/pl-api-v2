@@ -8,7 +8,6 @@ router.get('/area/all', api_delivery_controller.get_all_areas);
 
 router.get('/area/:store/:color', api_delivery_controller.get_one_area);
 
-
 router.get('/test', api_delivery_controller.get_all_areas_processor)
 
 module.exports = router;

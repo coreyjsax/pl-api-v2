@@ -42,7 +42,8 @@ const api_deliveryRoutes = require('./routes/api/delivery.js'),
       api_indexRoutes = require('./routes/api/index'),
       api_locationsRoutes = require('./routes/api/locations'),
       api_menuRoutes = require('./routes/api/menu'),
-      api_ingredientRoutes = require('./routes/api/ingredients');
+      api_ingredientRoutes = require('./routes/api/ingredients'),
+      api_itemRoutes = require('./routes/api/items');
 
 
 app.use('/delivery', api_deliveryRoutes);
@@ -51,6 +52,7 @@ app.use('/', api_indexRoutes);
 app.use('/location', api_locationsRoutes);
 app.use('/menu', api_menuRoutes);
 app.use('/ingredients', api_ingredientRoutes);
+app.use('/items', api_itemRoutes);
 
 //Express Middleware
 app.use(morgan('dev'));

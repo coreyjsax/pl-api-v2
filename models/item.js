@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 var ItemSchema = new mongoose.Schema({
     name: String,
-    locations: [],
+    locations: [{type: mongoose.Schema.Types.ObjectId, ref: 'Location'}],
     order_types: [],
     description: [],
     tags: [],

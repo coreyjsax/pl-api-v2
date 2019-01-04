@@ -19,5 +19,28 @@ exports.tools = {
         today = mm + '/' + dd + '/' + yyyy;
         return today;
     },
+    removeDuplicates: function(array){
+        return array.filter((item, index) => {
+            return array.indexOf(item) >= index;
+        });
+    }
 }
 
+//Menu Item Image Upload
+exports.Storage_Item = multer.diskStorage({
+    destination: function(req, file, callback){
+         console.log('============')
+        console.log(req.params.id)
+        callback(null, "./public/uploads/menus/item");
+    },
+    filename: function(req, file, callback){
+        var raw_title = req.body.name;
+        var raw_title2 = raw_title.toLowerCase();
+        var title = raw_title2.replace(/\s/g, '_');
+        callback(null, title + '.jpg');
+    }
+});
+
+exports.upload_item = multer({
+    storage: exports.Storage_Item,
+}); //Field name and max count

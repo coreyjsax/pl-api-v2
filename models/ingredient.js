@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 var IngredientSchema = new mongoose.Schema({
-    name: String, 
+    name: {type:String, lowercase: true},
     description: String,
     type: [],
     tags: [],
@@ -12,7 +12,7 @@ var IngredientSchema = new mongoose.Schema({
     cost: Number,
     notes: String,
     meta: {
-        color: String
+        color: {type: String, lowercase: true}
     }
 });
 
