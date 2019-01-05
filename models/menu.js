@@ -6,8 +6,18 @@ var Menu_Schema = new mongoose.Schema({
     name: String, 
     nickname: String, 
     description: String,
-    categories: [],
-    locations: [],
+    categories: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category"
+        }
+        ],
+    locations: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Location"
+        }
+        ],
     image: {
         image_name: String, 
         upload_date: {

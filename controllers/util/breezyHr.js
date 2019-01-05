@@ -5,10 +5,10 @@ let breezyKeys = {};
 let breezyPositions = {};
 
 let breezyHrReqs = {
-    base: 'https://breezy.hr/public/api/v3',
-    sign_in: 'https://breezy.hr/public/api/v3/signin',
-    user_details: 'https://breezy.hr/public/api/v3/user/details',
-    company: 'https://breezy.hr/public/api/v3/company/'
+    base: 'https://api.breezy.hr/v3',
+    sign_in: 'https://api.breezy.hr/v3/signin',
+    user_details: 'https://api.breezy.hr/v3/user/details',
+    company: 'https://api.breezy.hr/v3/company/'
 }
 
 exports.getUser = function(){

@@ -29,6 +29,27 @@ exports.get_menus = (req, res) => {
     });
 };
 
+exports.get_all_menus_full = (req, res) => {
+    Menu.find().
+    populate('categories').
+    populate('locations').
+    exec((err, docs) => {
+        if (err) {
+            if(!docs){
+                res.status(404).send({status: 404, message: 'No menus found'});
+            } else {
+                res.status(500).send(server_error);
+            }
+        } else {
+            if (docs.length === 0){
+                res.status(404).send({status: 404, message: 'No menus found'});
+            } else {
+                res.json(docs)
+            }
+        }
+    })
+}
+
 //Get Meny by ID
 exports.get_menu_by_id = (req, res) => {
     Menu.findById(req.params.menu_id, (err, doc) => {

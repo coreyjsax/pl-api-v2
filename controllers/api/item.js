@@ -25,6 +25,24 @@ exports.post_item_create = (req, res) => {
 }
 
 exports.get_items_all = (req, res) => {
+    Item.find({}, (err, docs) => {
+        if (err) {
+            if (!docs){
+                res.status(404).send({status: 404, message: 'No items found'});
+            } else {
+                res.status(500).send(server_error)
+            }
+        } else {
+            if (docs.length === 0) {
+                res.status(404).send({status: 404, message: 'No items found'});
+            } else {
+                res.json(docs)
+            }
+        }
+    })
+}
+
+exports.get_items_all_full = (req, res) => {
     Item.find().
     populate('ingredients').
     populate('locations').
@@ -43,12 +61,12 @@ exports.get_items_by_search = (req, res) => {
     populate('locations').
     exec((err, results) => {
         if (err) {
-            console.log(err)
+            console.log(err);
         } else {
                 let filtered = [];
                 for (var i = 0; i < results.length; i++){
                     for (var j = 0; j < results[i].ingredients.length; j++){
-                        if (results[i].ingredients[j].name == req.query){
+                        if (results[i].ingredients[j].name == req.params.name){
                             filtered.push(results[i]);
                         }
                     }
@@ -57,9 +75,11 @@ exports.get_items_by_search = (req, res) => {
                 res.json(stuff);
         }
     });
-}
+};
 
 exports.search_items = (array, filters) => {
+     
+ 
  /*   
             let filtered = [];
             for (var i = 0; i < array.length; i++){
@@ -71,7 +91,7 @@ exports.search_items = (array, filters) => {
                 }
             let stuff = tools.tools.removeDuplicates(filtered);
             return stuff; */
-}
+};
 
 
 
@@ -84,45 +104,72 @@ exports.get_array_items_by_search = (req, res) => {
             console.log(err);
         } else {
             let query = req.query;
-            let test = exports.filterArrays(results, query)
-            res.json(test)
+                query = exports.filterArrays(results, query);
+            
+            let data = {
+                search: query,
+                results: results
+            };
+            let finalData = exports.filterResults(data, data.search);
+            
+            res.json(data);
         }
-    })
-}
+    });
+};
 
 exports.filterArrays = (results, query) => {
     let data = {};
     let queryKeys = Object.keys(query);
     let queryArray = [];
+    let queryObj = {};
     
     data.params = queryKeys;
     data.query = query;
     
     for (var key in data.query) {
         if (typeof data.query[key] === 'string'){
-            data.query[key] = [data.query[key]]
+            data.query[key] = [data.query[key]];
         }
-        queryArray.push({[key]: data.query[key]})
+        queryArray.push({key: data.query[key]});
+        queryObj[key] = data.query[key]
+    }
+    console.log(queryObj)
+    data.query = queryObj;
+    return data;
+};
+
+exports.filterResults = (data, search) => {
+    let params = data.search.params;
+    let query = data.search.query;
+    let results = data.results;
+    
+    let collection = [];
+    
+    let queries = [];
+    
+    
+    
+    for (let i = 0; i < results.length; i++){
+        for (let j = 0; j < results[i].ingredients.length; j++){
+            
+        }
     }
     
-    data.query = queryArray;
-    
-    
-  /*  
-    if (query.name) {
-        if (query.name.length === 1){
-            data.query.name = query.name;
-        } else {
-            data.query.name = [];
-            for (let i = 0; i < query.name.length; i++){
-                data.query.push(query.name[i]);
+    for (let i = 0; i < results.length; i++){
+        for (let j = 0; j < results[i].ingredients.length; j++){
+            if (results[i].ingredients[j].name == search){
+                console.log(results[i]);
             }
         }
     }
-    */
     
-    
-    
-    
-    return data;
+   /* for (var i = 0; i < data.length; i++){
+                    for (var j = 0; j < data[i].ingredients.length; j++){
+                       if (data[i].ingredients[j].name == req.params.search){
+                            filtered.push(array[i]);
+                        } 
+                    }
+                }
+            let stuff = tools.tools.removeDuplicates(data); */
+            return data; 
 }
