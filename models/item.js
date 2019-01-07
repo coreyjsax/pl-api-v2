@@ -4,7 +4,12 @@ var ItemSchema = new mongoose.Schema({
     name: String,
     locations: [{type: mongoose.Schema.Types.ObjectId, ref: 'Location'}],
     order_types: [],
+    category: {
+        type: String, 
+        lowercase: true
+    },
     description: [],
+    prices: [],
     tags: [],
     ingredients: [{type: mongoose.Schema.Types.ObjectId, ref: 'Ingredient'}],
     notes: String,

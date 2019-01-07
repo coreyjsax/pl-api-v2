@@ -68,3 +68,17 @@ exports.get_menu_by_id = (req, res) => {
         }
     });
 };
+
+//Get Menu by ID full 
+exports.get_menu_by_id_full = (req, res) => {
+    let menuReq = Menu.findById(req.params.menu_id)
+                  .populate('categories')
+                  .populate('locations', 'nickname name')
+                  .exec();
+    Promise.all([menuReq])
+    .then(([menu]) => {
+        res.json(menu)
+    }).catch((err) => {
+        res.status(500).json({code: 500, error: err});
+    })
+}
