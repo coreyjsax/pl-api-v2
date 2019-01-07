@@ -1,0 +1,62 @@
+<style>
+    .actions.ingredient {
+        margin-top:30px;
+    }
+</style>
+
+<form id="add-ingredient" class="ui form" action="./ingredient/create" method="POST">
+    <div class="ui inverted segment">
+    <div class="field">
+        <label>Ingredient Name</label>
+        <input type="text" name="name" placeholder="ingredient name">
+    </div>
+    <div class="field">
+        <label>Description</label>
+        <textarea name="description" placeholder="Write description for this ingredient" rows="3"></textarea>
+    </div>
+    <div class="field">
+        <label>Type</label>
+        <select name="type" class="ui fluid search dropdown type">
+            <option value="">Select category</option>
+            <option value="sauce" data-color="pink">Sauce</option>
+            <option value="cheese" data-color="yellow">Cheese</option>
+            <option value="meat" data-color="red">Meat</option>
+            <option value="meat-substitute" data-color="orange">Meat Substitute</option>
+            <option value="vegetable" data-color="green">Vegetable</option>
+            <option value="cheese-substitute" data-color="yellow">Cheese Substitute</option>
+        </select>
+    </div>
+    <div class="field">
+        <label>Tags</label>
+        <select name="tags" multiple="" class="ui fluid search dropdown">
+            <option value="">Select Dietary Tags</option>
+              <option value="vegan">V</option>
+              <option value="vegan_on_request">VR</option>
+              <option value="gluten_free">GF</option>
+              <option value="gluten_free_on_request">GFR</option>
+              <option value="contains_nuts">Contains Nuts</option>
+              <option value="contains_gluten">Contains Gluten</option>
+              <option value="pizza_topping">Pizza Topping</option>
+        </select>
+    </div>
+    <div  class="field color">
+        
+    </div>
+    <div class="field">
+        <label>Cost</label>
+        <input type="text" name="cost" placeholder="enter ingredient cost" >
+    </div>
+    <div class="field">
+        <label>Notes</label>
+        <textarea name="notes" placeholder="Enter notes about this ingredient" rows="3"></textarea>
+    </div>
+    <div style="float:right;" class="actions ingredient">
+        <div class="ui button grey inverted button deny">
+          <i class="remove icon"></i>
+         cancel
+        </div>
+         <button class="ui button teal inverted ok" type="submit"><i class="checkmark icon"></i>Submit</button>
+    </div>
+    </div>
+</form>
+

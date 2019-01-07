@@ -1,0 +1,65 @@
+  <form id="add-item" class="ui form" enctype="multipart/form-data"  action="./items" method="POST">
+        <div class="ui inverted segment">
+        <div class="field">
+            <label>Item Name</label>
+            <input type="text" name="name" placeholder="item name">
+        </div>
+        <input class="form-control-file file-control-sm" type="file" name="imagename" />
+        <div id="select-locations" class="field">
+            <label>Locations</label>
+            <select name="locations" id="location_dropdown" multiple="" class="ui fluid dropdown">
+                <option value="">select all locations that will serve menu</option>
+            </select>
+        </div>
+        <div id="location-form-data" class="fields">
+            <% for (let i = 0; i < locations.length; i++){%>
+            <% }%>
+        </div>
+        <div id="order-type" class="field">
+            <label>Order Types</label>
+            <select name="order_type" multiple="" id="order_type_dropdown" class="ui fluid search dropdown">
+                <option value="">select order types</option>
+                <option value="delivery">Delivery</option>
+                <option value="dine-in">Dine-in</option>
+                <option value="slice-line">Slice line</option>
+                <option value="bar">Bar</option>
+                <option value="carry-out">Carry out</option>
+            </select>
+        </div>
+        <div id="order-type-descriptions" class="fields">
+            
+        </div>
+        <div id="select-ingredients" class="field ingredients">
+            <label>Ingredients</label>
+            <select name="ingredients" id="ingredients_dropdown" multiple="" class="ui fluid search dropdown">
+                <option value="">add item ingredients</option>
+            </select>
+        </div>
+        <div id="ingred-desc" class="fields">
+            
+        </div>
+        <div id="item-diet-tags" class="field">
+            <label>Dietary Tags</label>
+            <select name="tags" multiple="" class="ui fluid search dropdown tags">
+                <option value="">Select Dietary Tags</option>
+                <option value="V">V</option>
+                <option value="VR">VR</option>
+                <option value="GF">GF</option>
+                <option value="GFR">GFR</option>
+                <option value="contains_nuts">Contains Nuts</option>
+                <option value="contains_gluten">Contains Gluten</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Notes</label>
+            <textarea name="notes" placeholder="Enter notes about this item" rows="3"></textarea>
+        </div>
+        <div style="float:right;" class="actions dish">
+            <div class="ui red button deny">
+              <i class="remove icon"></i>
+             cancel
+            </div>
+            <button id="submit-button" class="ui button green" type="submit"><i class="checkmark icon"></i>Submit</button>
+        </div>
+        </div>
+    </form>

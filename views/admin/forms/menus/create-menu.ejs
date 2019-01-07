@@ -1,0 +1,57 @@
+<style>
+    .actions.menu {
+        margin-top:30px;
+    }
+</style>
+
+<form id="add-menu" class="ui form" enctype="multipart/form-data" action="./create" method="POST">
+    <div class="ui inverted segment">
+    <div class="field">
+        <label>Name</label>
+        <input type="text" name="name" placeholder="Menu name">
+    </div>
+    <div class="field">
+        <label>Description</label>
+        <textarea name="description" placeholder="Describe menu" rows="3"></textarea>
+    </div>
+   <div id="select-categories" class="field">
+    <label>Categories</label>
+    <select id="categories_dropdown" name="categories" multiple="" class="ui fluid search dropdown">
+      <option value="">Select Menu Categories</option>
+    </select>
+  </div>
+   <div class="field">
+        <label>Order Type</label>
+        <select id="order_types" name="order_type" class="ui dropdown">
+            <option value="">select order type</option>
+            <option value="delivery">Delivery</option>
+            <option value="dine-in">Dine-in</option>
+            <option value="slice-line">Slice line</option>
+            <option value="bar">Bar</option>
+            <option value="carry-out">Carry out</option>
+        </select>
+    </div>
+  <div id="select-locations" class="field">
+      <label>Locations</label>
+      <select name="locations" id="location_dropdown" multiple="" class="ui fluid dropdown">
+          <option value="">select all locations that will serve menu</option>
+      </select>
+  </div>
+  
+  <div id="category_form_data" class="fields">
+      
+  </div>
+  
+  <div class="fields location_form_data">
+      
+  </div>
+  <input class="form-control-file file-control-sm" id="imagename" type="file" name="imagename" />
+    <div style="float:right;" class="actions menu">
+        <div class="ui red button deny">
+          <i class="remove icon"></i>
+         cancel
+        </div>
+         <button id="create-menu-submit" class="ui button green ok" type="submit"><i class="checkmark icon"></i>Submit</button>
+    </div>
+    </div>
+</form>

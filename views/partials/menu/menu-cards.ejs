@@ -1,0 +1,182 @@
+<style>
+.scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+.scrolling-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+.card {
+    margin:5px;
+    padding:2px;
+    height: 300px;
+    width: 300px;
+    border-radius: 3px;
+    background-color:green;
+    display: inline-block;
+    position:relative;
+    background-image: url('/img/textures/cards2x.png');
+    -webkit-box-shadow: 1px 0px 14px -4px rgba(0,0,0,0.85);
+    -moz-box-shadow: 1px 0px 14px -4px rgba(0,0,0,0.85);
+    box-shadow: 1px 0px 14px -4px rgba(0,0,0,0.85);
+    
+  }
+  
+  .card:first-child {
+      margin-left:15px;
+  }
+  .item-img {
+      border-radius: 3px 3px 0px 0px;
+  }
+</style>
+
+<div id="menu-gallery-menu" class="ui top attached five item menu">
+    <div class="ui dropdown icon item">
+        <i class="wrench icon"></i>
+        <div class="menu">
+        <div class="item new" data-content="menu">
+            New Menu
+        </div>
+        <div class="item new" data-content="category">
+            New Category
+        </div>
+        <div class="item new" data-content="item">
+            New Item
+        </div>
+        <div class="item new" data-content="ingredient">
+            New Ingredient
+        </div>
+    </div>
+</div>
+    <a class="item content" data-action="menu">
+        menus
+    </a>
+    <a class="item content" data-action="category">
+        categories
+    </a>
+    <a class="item content" data-action="item">
+        items
+    </a>
+    <a class="item content" data-action="ingredient">
+        ingredients
+    </a>
+</div>
+
+    <section class="scrolling-wrapper">
+        <% for (let i = 0; i < items.length; i++){ %>
+            <div class="card">
+                <img class="item-img" src=".<%=items[i].image.url%>" width='296px'>
+                <div><%=items[i].name%></div>
+                
+            </div>
+        <% } %>
+    </section>
+
+<script>
+    $('.ui.dropdown')
+  .dropdown()
+;
+function menuGalleryController(){
+    let menu_gallery_menu = document.getElementById('menu-gallery-menu');
+    
+    menu_gallery_menu.addEventListener('click', (event) => {
+        let target = event.target;
+        
+        if (target.matches('.new')){
+            let content = target.getAttribute('data-content');
+            getForms(content)
+        } else if (target.matches('.content')){
+            loadGallery(target)
+        }
+        
+    });
+    
+    function getForms(content){
+        let modal = document.getElementById('form_modal');
+        let headerDest = modal.querySelector('.header');
+        let contentDest = modal.querySelector('.content');
+        
+        headerDest.innerHTML = `new ${content}`;
+        if (content === 'category'){
+            contentDest.innerHTML = `<% include ../../admin/forms/menus/create-category %>`;
+            
+        } else if (content === 'ingredient') {
+            contentDest.innerHTML = `<% include ../../admin/forms/menus/create-ingredient %>`;
+            $('select.dropdown').dropdown();
+            createIngredientController();
+            
+        } else if (content === 'item') {
+            contentDest.innerHTML = `<% include ../../admin/forms/menus/create-item %>`;
+            $('select.dropdown').dropdown();
+      
+        } else if (content === 'menu') {
+            contentDest.innerHTML = `<% include ../../admin/forms/menus/create-menu %>`
+            $('select.dropdown').dropdown();
+        } else {
+            contentDest.innerHTML = '';
+        }
+        
+        
+        $(modal).modal('show');
+    }
+    
+    function loadGallery(target){
+        
+    }
+    
+    function createIngredientController(){
+        var form = document.getElementById('add-ingredient');
+        
+        form.addEventListener('click', (event) => {
+            if (event.target.closest('.type')) {
+                if (event.target.matches('.item')) {
+                    var color = '';
+                    let target = event.target;
+                    let type = target.getAttribute('data-value');
+                    let destination = form.querySelector('.color');
+                    console.log(destination)
+                    switch(type) {
+                        case 'sauce':
+                            color = 'pink';
+                            break;
+                        case 'vegetable':
+                            color = 'olive';
+                            break;
+                        case 'cheese':
+                            color = 'yellow';
+                            break;
+                        case 'meat':
+                            color = 'red';
+                            break;
+                        case 'meat-substitute':
+                            color = 'orange';
+                            break;
+                        case 'cheese-substitute':
+                            color = 'yellow';
+                            break;
+                        default: ''
+                    }
+                var color_input = `
+                    <input name="color" type="hidden" value="${color}" readonly="">
+                `;
+                destination.innerHTML = color_input;
+                }
+            }
+        })
+    }
+    
+}
+menuGalleryController()
+</script>
+
+<script>
+    
+     
+    
+    
+     
+     
+</script>
+

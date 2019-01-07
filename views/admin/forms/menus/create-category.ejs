@@ -1,0 +1,29 @@
+<style>
+    .actions.category {
+        margin-top:30px;
+    }
+</style>
+
+<form id="add-category" class="ui form" enctype="multipart/form-data" action="./category/create" method="POST">
+    <div class="ui inverted segment">
+    <div class="field">
+        <label>Category Name</label>
+        <input type="text" name="name" placeholder="Category name">
+    </div>
+    <div class="field">
+        <label>Description</label>
+        <textarea name="description" placeholder="Category description" rows="3"></textarea>
+    </div>
+    <input class="form-control-file file-control-sm" type="file" name="imagename"/>
+    <div style="float:right;" class="actions category">
+        <div class="ui grey inverted button deny">
+            <i class="remove icon"></i>cancel
+        </div>    
+        <button class="ui button teal inverted ok category" type="submit">
+            <i class="checkmark icon"></i>
+            submit
+        </button>
+    </div>
+    </div>
+</form>
+
