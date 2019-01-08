@@ -12,7 +12,44 @@ const fs = require('fs');
 //  Item Controllers  //
 ////////////////////////
 
+exports.post_test = (req, res) => {
+    const item = {
+        name: req.body.name,
+        description: [],
+        locations: req.body.locations,
+        category: [],
+        order_types: req.body.order_types,
+        tags: req.body.tags,
+        ingredients: req.body.ingredients,
+        notes: req.body.notes,
+        image: {
+            image_name: req.file.filename,
+            upload_date: Date.now(),
+            url: './uploads/menus/item/' + req.file.filename
+        },
+        prices: [],
+        cost: []
+    };
+    
+     
+    
+    for (let i = 0; i < req.body.ot_name.length; i++){
+        item.description.push({name: req.body.ot_name[i], description: req.body.ot_desc[i]})
+    }
+    
+   
+    console.log(item)
 
+    Item.create(item, (err, newlyCreated) => {
+            if (err) {
+                res.send(err)
+            } else {
+                res.status(200).send({status: 200, message: 'Post succeeded', data: newlyCreated})
+            }
+        }) 
+       
+    
+}
 
 
 //Post Item
@@ -20,14 +57,9 @@ exports.post_item_create = (req, res) => {
     
     
     let array = req.body.ingredients;
-    console.log(array)
-    
     let locations = req.body.locations;
-   let newlocations = locations.split(',');
-    console.log(newlocations)
+    let newlocations = locations.split(',');
     let newArray = array.split(',')
-    console.log(newArray)
-    
     let tags = req.body.tags;
     tags = tags.split(",");
     

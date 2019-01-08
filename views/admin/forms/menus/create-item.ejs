@@ -1,4 +1,4 @@
-  <form id="add-item" class="ui form" enctype="multipart/form-data"  action="./items" method="POST">
+  <form id="add-item" class="ui form" enctype="multipart/form-data"  action="./items/test" method="POST">
         <div class="ui inverted segment">
         <div class="field">
             <label>Item Name</label>
@@ -9,34 +9,43 @@
             <label>Locations</label>
             <select name="locations" id="location_dropdown" multiple="" class="ui fluid dropdown">
                 <option value="">select all locations that will serve menu</option>
+                <% for (let i = locations.length; i--;){ %>
+                <option value="<%=locations[i]._id%>"><%=locations[i].name%></option>
+                <% } %>
             </select>
         </div>
         <div id="location-form-data" class="fields">
-            <% for (let i = 0; i < locations.length; i++){%>
-            <% }%>
-        </div>
-        <div id="order-type" class="field">
-            <label>Order Types</label>
-            <select name="order_type" multiple="" id="order_type_dropdown" class="ui fluid search dropdown">
-                <option value="">select order types</option>
-                <option value="delivery">Delivery</option>
-                <option value="dine-in">Dine-in</option>
-                <option value="slice-line">Slice line</option>
-                <option value="bar">Bar</option>
-                <option value="carry-out">Carry out</option>
-            </select>
-        </div>
-        <div id="order-type-descriptions" class="fields">
             
         </div>
-        <div id="select-ingredients" class="field ingredients">
-            <label>Ingredients</label>
-            <select name="ingredients" id="ingredients_dropdown" multiple="" class="ui fluid search dropdown">
-                <option value="">add item ingredients</option>
-            </select>
+        <div class="ui inverted olive segment">
+            <div id="order-type" class="field">
+                <label>Order Types</label>
+                <select name="order_type" multiple="" id="order_type_dropdown" class="ui fluid search dropdown">
+                    <option value="">select order types</option>
+                    <option value="delivery">Delivery</option>
+                    <option value="dine-in">Dine-in</option>
+                    <option value="slice-line">Slice line</option>
+                    <option value="bar">Bar</option>
+                    <option value="carry-out">Carry out</option>
+                </select>
+            </div>
+            <div id="order-type-descriptions">
+                
+            </div>
         </div>
-        <div id="ingred-desc" class="fields">
-            
+        <div class="ui inverted teal segment">
+            <div id="select-ingredients" class="field ingredients">
+                <label>Ingredients</label>
+                <select name="ingredients" id="ingredients_dropdown" multiple="" class="ui fluid search dropdown">
+                    <option value="">add item ingredients</option>
+                    <% for (let i = ingredients.length; i--;){ %>
+                    <option value="<%=ingredients[i]._id%>"><%=ingredients[i].name%></option>
+                    <% } %>
+                </select>
+            </div>
+            <div id="ingred-desc">
+                
+            </div>
         </div>
         <div id="item-diet-tags" class="field">
             <label>Dietary Tags</label>
