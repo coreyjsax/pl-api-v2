@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Bhaina|Chelsea+Market|Emblema+One|Finger+Paint|Kumar+One|Schoolbell" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>	
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+     <script src="/front_end_js/circletype.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css">
+	
+	<link rel="stylesheet" type="text/css" href="/css/fonts.css">
+    <link href="https://fonts.googleapis.com/css?family=Covered+By+Your+Grace|Rock+Salt|Kumar+One" rel="stylesheet">
+
+
+<style>
+    body {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-image: url('/img/menu-boards/1920x1080ProBrushTextureChalkboard_1.png');
+    }
+    .frame {
+        width: 100%;
+        margin:10px 20px 20px 20px;
+    }
+   .header {
+        font-family: 'Stay-Weird', cursive;
+        color:white;
+        text-align:center;
+        opacity:.9;
+        color:#ff0061;
+    }
+    .headline {
+        margin-top:80px;
+    
+    }
+    .slices { 
+        font-size: 150px;
+        position:relative;
+        top:20px;
+    }
+    .of, .the {
+        font-size: 60px;
+        line-height: 80px;
+        
+    }
+    .day {
+        font-size: 150px;
+        line-height: 150px;
+    }
+    .title {
+        font-family: 'Stay-Weird', cursive;
+        color:white;
+        text-align:center;
+        font-size: 80px;
+    }
+    .ingredients {
+        font-family: 'TuckShop-Regular', cursive;
+        color:white;
+        font-size: 70px;
+        top:-20px;
+        position:relative;
+        text-align: center;
+        line-height:70px;
+    }
+    .box1 {
+        position:relative;
+    }
+    .wrapper {
+        margin:20px;
+    }
+    
+    .meat, .veggie {
+        margin-top:100px;
+    }
+    .price {
+        font-family: 'Rock Salt', cursive;
+        color:white;
+        font-size: 60px;
+        color:white
+        text-align: center;
+        line-height:70px;
+        position:relative;
+        top:30px;
+         color:#ff0061;
+    }
+    .meat.title{
+        
+    }
+    .meat.price {
+       
+    }
+    .price.pep-cheese {
+        text-align:center;
+        position:relative;
+        top:-50px;
+    }
+    .title.pep_cheese > span:nth-child(2){
+        font-size: 50px;
+        position:relative;
+        top:-35px;
+    }
+    .title.pep_cheese > span:first-child{
+        line-height:1px;
+        position:relative;
+        top:20px;
+    }
+    .title.pep_cheese > span:nth-child(3){
+        position:relative;
+        top:-60px;
+    }
+    .promo {
+        text-align:center;
+    }
+    .promo > span {
+        position:relative;
+        font-family:'TuckShop-Regular';
+        color:white;
+        text-align:center;
+        font-size: 60px;
+        top:150px;
+    }
+</style>
+</head>
+<% 
+    const sliceArray = slices.custom_menu.custom_sections[0].custom_items;
+    const promo = slices.custom_menu.custom_sections[1].description;
+    const header = slices.custom_menu.name;
+    const header_array = header.split(' ');
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var today = `${mm}/${dd}`;
+%>
+<body>
+    <div class="container wrapper">
+        <div class="ui equal width grid">
+                <div class="column meat">
+                    <div class="meat-slice">
+                        <h1 class="title meat"><%=sliceArray[1].name%></h1>
+                        <% 
+                            let meat_array = sliceArray[1].description;
+                            meat_array = meat_array.split(',');
+                        %>
+                        
+                            <p class="ingredients">
+                                <% for (let i = 0; i < meat_array.length; i++){ %>
+                                <span><%=meat_array[i]%></span><br>
+                            <% }%>
+                            
+                            <span class="price meat">$<%=sliceArray[0].custom_containers[0].price%></span>
+                            </p>
+                            
+                    </div>
+                </div>
+                <div class="column headline">
+                    
+                    <div class="header 1st"><span class="slices" id="demo1"><%= header_array[0]%></span></div>
+                    <div class="header 2nd"><span class="of"><%= header_array[1]%></span> &nbsp;&nbsp;<span class="the"><%= header_array[2]%></span></div>
+                    <div class="header 3rd"><span class="day"><%= header_array[3]%></span></div>
+                    <div class="veggie-slice">
+                        <div class"pep-cheese">
+                            <% 
+                                let pep_cheese_array = sliceArray[2].name;
+                                pep_cheese_array = pep_cheese_array.split(' ');
+                            %>
+                            <h1 class="title pep_cheese">
+                                <% for (let i = 0; i < pep_cheese_array.length; i++) { %>
+                                    <span><%=pep_cheese_array[i]%><br></span>
+                                <% } %>
+                                <span class="price pep-cheese">$<%=sliceArray[2].custom_containers[0].price%></span>
+                            </h1>
+                            
+                        </div>
+                    </div>
+                </div>    
+                <div class="column veggie">
+                    <div class="meat-slice">
+                        <h1 class="title"><%=sliceArray[0].name%></h1>
+                        <% 
+                            let veggie_array = sliceArray[0].description;
+                            veggie_array = veggie_array.split(',');
+                            let date = Date.now();
+                        %>
+                        <p class="ingredients">
+                            <% for (var i = 0; i < veggie_array.length; i++) {%>
+                                <span><%=veggie_array[i]%></span><br>
+                            <% } %>
+                            <span class="price">$<%=sliceArray[0].custom_containers[0].price%></span>
+                        </p>
+                        
+                    </div>
+                </div>
+        </div>
+        <div class="ui grid">
+            <div class="sixteen wide column">
+                <p class="promo"><span><%=promo%>&nbsp;•&nbsp;updated&nbsp;on&nbsp;<%=today%></span></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

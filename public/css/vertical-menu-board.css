@@ -1,0 +1,147 @@
+/* Menu Board Styles */
+
+/* Horizontal Board */
+
+
+
+body {
+  
+  background-color: #282422;
+    background-image: radial-gradient(#3C3A3B, #282422);
+    background-size: cover;
+    background: url('/images/blackboard.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  
+}
+
+html,body {
+  margin: 0;
+  padding:0;
+  margin-top:100px;
+  margin-left:-50px;
+  
+}
+
+.rotate-wrapper {
+    transform: rotate(90deg);
+    transform-origin:bottom left;
+    position:absolute;
+    top:-100vw;
+    height:100vw;
+    width:100%;
+    
+}
+.rotatetwo {
+    transform: rotate(180deg);
+    margin-right:11px;
+    padding-left: 1200px;
+    width: 100%;
+}
+
+  /* Spacing */
+  header {
+      text-align:center;
+      
+  }
+  
+  .brewery-heading {
+      margin-left: -260px;
+      font-family:"";
+  }
+  .beer-heading {
+      margin-left: 290px;
+  }
+  
+  .abv-heading {
+      margin-left:300px;
+  }
+ 
+  .beer-grid {
+     margin-top:30px;
+  }
+  
+  .s-a {
+      top:50px;
+      right:270px;
+  }
+  .s-b {
+      top:42px;
+      left: 20px;
+  }
+  .s-c {
+      top: 50px;
+      left: 320px;
+  }
+  
+  .brewery {
+      font-family: 'TuckShop-Regular', cursive;
+      font-size: 65px;
+      margin-right: 295px;
+       white-space:nowrap;
+       margin-left:-270px;
+       line-height: 60px;
+  }
+  
+  .beer {
+     font-family: 'TuckShop-Regular', cursive;
+      color:white;
+      opacity:.8;
+      font-size: 75px;
+      white-space:nowrap;
+      width:200%;
+      line-height: 60px;
+      margin-right: 320px;
+  }
+  .abv {
+     
+      font-size: 75px;
+      font-family: 'TuckShop-Regular', cursive;
+      line-height: 60px;
+      margin-right:-50px;
+  }
+  .style {
+      font-size: 75px;
+      font-family: 'TuckShop-Regular', cursive;
+  }
+  
+  /* Typeography */
+  .heading {
+      font-size: 70px;
+      font-family: "Colored-Crayons", cursive;
+      color:white;
+      margin-bottom:-200px;
+  }
+  
+ /* Swashes */
+ .swash {
+     font-family: 'Stay-Weird-Swash', cursive;
+     font-size: 40px;
+     color:white;
+ }
+ .beer:nth-child(3n){
+     color:blue;
+ }
+.pink span {
+    color:#ff9bbc;
+}
+.blue {
+    color:#93d9ff;
+}
+.yellow {
+    color:#d8ff90;
+}
+
+.line1 {
+    font-size:65px;
+    line-height: 70px;
+}
+.headline {
+        color:#ff0061;
+        font-size:80px;
+        font-family: 'Stay-Weird', cursive;
+        text-align:left;
+        margin-bottom:-10px;
+        margin-left:-30px;
+}

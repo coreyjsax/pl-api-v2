@@ -1,0 +1,68 @@
+html {
+    background-color: #282422;
+    background-image: radial-gradient(#3C3A3B, #282422);
+    background-size: cover;
+}
+
+body {
+  border: 30px solid;
+  border-image: url('/images/blackboard.jpg')  fill  0 500/ 0 200px;
+  
+}
+
+.brewery {
+      font-family: 'TuckShop-Regular', cursive;
+      font-size: 65px;
+      margin-right: 295px;
+       white-space:nowrap;
+       margin-left:-270px;
+       line-height: 60px;
+  }
+  
+  .beer {
+     font-family: 'TuckShop-Regular', cursive;
+      color:white;
+      opacity:.8;
+      font-size: 75px;
+      white-space:nowrap;
+      width:200%;
+      line-height: 60px;
+      margin-right: 320px;
+  }
+  .abv {
+     
+      font-size: 75px;
+      font-family: 'TuckShop-Regular', cursive;
+      line-height: 60px;
+      margin-right:-50px;
+  }
+  .style {
+      font-size: 75px;
+      font-family: 'TuckShop-Regular', cursive;
+  }
+  
+  /* Typeography */
+  .heading {
+      font-size: 70px;
+      font-family: "Colored-Crayons", cursive;
+      color:white;
+      margin-bottom:-200px;
+  }
+  
+  .swash {
+     font-family: 'Stay-Weird-Swash', cursive;
+     font-size: 40px;
+     color:white;
+ }
+ .beer:nth-child(3n){
+     color:blue;
+ }
+.pink span {
+    color:#ff9bbc;
+}
+.blue {
+    color:#93d9ff;
+}
+.yellow {
+    color:#d8ff90;
+}
