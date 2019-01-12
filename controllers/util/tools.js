@@ -34,7 +34,7 @@ exports.Storage_Item = multer.diskStorage({
         callback(null, "./public/uploads/menus/item");
     },
     filename: function(req, file, callback){
-        var raw_title = req.body.name;
+        var raw_title = req.body.name + Date.now();
         var raw_title2 = raw_title.toLowerCase();
         var title = raw_title2.replace(/\s/g, '_');
         callback(null, title + '.jpg');

@@ -53,6 +53,18 @@ exports.getUntappdMenuById = (menuId) => {
     });
 };
 
+exports.getCustomMenuById = (menuId) => {
+    return request({
+        url: `${baseUrl}custom_menus/${menuId}?full=true`,
+        headers: headers
+    }).then((res) => {
+        let data = JSON.parse(res);
+        return data;
+    }).catch((error) => {
+        return error;
+    })
+}
+
  exports.getAllUntappdFullMenusByLocation = (locationId) => {
     let requests = [];
     let menus = [];
@@ -79,3 +91,39 @@ exports.getUntappdMenuById = (menuId) => {
         return args;
     })
 } 
+//Custom Menus
+exports.getCustomMenusByLocation = (id) => {
+     return request({
+        url: `${baseUrl}locations/${id}/custom_menus`,
+        headers: headers
+    }).then((res) => {
+        let data = JSON.parse(res);
+        return data;
+    }).catch((error) => {
+        return error;
+    });
+}
+
+exports.getAllCustomMenusByLocation = (locationId) => {
+    let requests = [];
+    let menus = [];
+    return exports.getCustomMenusByLocation(locationId)
+    .then((menus) => {
+        let menuData = menus;
+        return menuData;
+    }).then((menuData) => {
+        for (let i = menuData.custom_menus.length; i--;){
+            let req = {
+                url: `${baseUrl}custom_menus/${menuData.custom_menus[i].id}?full=true`,
+                headers: headers,
+                json: true
+            };
+            requests.push(request(req));
+        }
+        return requests;
+    }).then((requests) => {
+        return Promise.all(requests);
+    }).then((args) => {
+        return args;
+    });
+}

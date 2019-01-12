@@ -15,7 +15,10 @@ const express = require('express'),
       path = require('path'),
       dotenv = require('dotenv').config(),
       promise = require('promise'),
+      expressValidator = require('express-validator'),
       expressWs = require('express-ws')(app);
+      
+      
       
        mongoose.Promise = global.Promise;
       
@@ -28,6 +31,9 @@ app.set('socketio', io);
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(methodOverride("_method"));
+app.use(expressValidator({
+    
+}));
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -50,6 +56,8 @@ const //api routes
       api_ingredientRoutes = require('./routes/api/ingredients'),
       api_itemRoutes = require('./routes/api/items'),
       api_categoryRoutes = require('./routes/api/category'),
+      //menu board routes
+      menuBoardRoutes = require('./routes/menu_boards'),
       //admin panel routes
       admin_panel_index_routes = require('./routes/admin_panel/index');
 
@@ -63,6 +71,7 @@ app.use('/ingredients', api_ingredientRoutes);
 app.use('/items', api_itemRoutes);
 app.use('/category', api_categoryRoutes);
 app.use('/admin', admin_panel_index_routes);
+app.use('/boards', menuBoardRoutes);
 
 //Express Middleware
 app.use(morgan('dev'));
