@@ -9,7 +9,7 @@ router.get('/', api_item_controller.get_items_all);
 
 router.post('/test', tools_controller.upload_item.single('imagename'), api_item_controller.post_test);
 
-router.post('/create', tools_controller.upload_item.single('imagename'), api_item_controller.post_item_create)
+router.post('/create',  tools_controller.upload_item.single('imagename'), api_item_controller.validate_item, api_item_controller.post_item_create)
 
 router.get('/full', api_item_controller.get_items_all_full);
 

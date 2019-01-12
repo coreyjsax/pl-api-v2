@@ -199,9 +199,10 @@ function menuGalleryController(){
         let destination = document.getElementById('order-type-descriptions');
         let html = `
             ${ordertypes.map(ordertype => 
-              `<div class="field">
+              ` <input name="ot_name" type="hidden" readonly="" value="${ordertype}">
+                <div class="field">
                     <label>${ordertype} description</label>
-                    <input name="ot_name" type="text" type="hidden" readonly="" value="${ordertype}">
+                   
                     <textarea name="ot_desc" type="text" rows="3"></textarea>
                 </div>`
             ).join('')}
@@ -234,6 +235,16 @@ function menuGalleryController(){
         destination.innerHTML = html;
         $('select.dropdown').dropdown();
     }
+    
+    function buildPrices(category, tags){
+        let destination = document.getElementById('prices');
+        
+        
+    }
+    
+   
+        }
+        sortPrices(req.body.category, tags)
 }
 menuGalleryController()
 </script>

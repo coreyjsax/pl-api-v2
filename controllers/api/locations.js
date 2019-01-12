@@ -102,13 +102,19 @@ exports.location_get_by_id_untappd = (req, res) => {
                 payload.location = doc;
                 let untappdId = doc.meta_data.untappd_id;
                 let untappd_menus = untappd.getAllUntappdFullMenusByLocation(untappdId);
-                Promise.all([untappd_menus])
-                .then(([untappd]) => {
+                let custom_menus = untappd.getAllCustomMenusByLocation(untappdId)
+                Promise.all([untappd_menus, custom_menus])
+                .then(([untappd, sliceMenu]) => {
                     let menus =[];
+                    let slices = []
                     for (let i = 0; i < untappd.length; i++) {
                         menus.push(untappd[i].menu);
                     }
+                    for (let i = 0; i < sliceMenu.length; i++){
+                        slices.push(sliceMenu[i].custom_menu);
+                    }
                     payload.untappd_menus = menus;
+                    payload.slice_menus = slices;
                     return payload;
                 }).then((paylaod) => {
                     res.json(payload);
@@ -150,6 +156,25 @@ exports.location_get_by_id_untappd_menu_by_id_full = (req, res) => {
         } 
     });
 };
+
+//Get - Get Location by ID and Full Custom Untapd Menu by ID //
+exports.location_get_by_id_untappd_custom_menu_by_id_full = (req, res) => {
+    let locationReq = Location.findById(req.params.location_id).exec();
+    let customMenuReq = untappd.getCustomMenuById(req.params.menu_id);
+    
+    Promise.all([locationReq, customMenuReq])
+    .then(([location, sliceMenu]) => {
+        let data = {};
+            data.location = location;
+            data.sliceMenu = sliceMenu;
+            return data;
+    }).then((data) => {
+        res.json(data);
+    }).catch((error) => {
+        res.status(500).send({status: 500, message: error});
+    })
+    
+}
 
 //GET - Get Location by ID and Location Delivery Area //
 exports.location_get_by_id_delivery_area = (req, res) => {

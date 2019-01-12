@@ -3,22 +3,237 @@ const Menu = require('../../models/menu');
 const Category = require('../../models/category');
 const Menu_Item = require('../../models/menu_item');
 const Item = require('../../models/item');
+const ItemTest = require('../../models/item_test');
 const Ingredient = require('../../models/ingredient');
 const server_error = {message: 'There was a problem...'};
-
+const {body} = require('express-validator/check');
 const tools = require('../../controllers/util/tools');
 const fs = require('fs');
 ////////////////////////
 //  Item Controllers  //
 ////////////////////////
 
+exports.validate_item = (req, res, next) => {
+    req.checkBody('name')
+        .notEmpty().withMessage('name required')
+        .isLength({min: 3}).withMessage('name must by 3+ chars')
+    req.checkBody('locations')
+        .notEmpty().withMessage('location required')
+    req.checkBody('order_types')
+        .custom(val => {
+            let array = val.split(',');
+            let allowedParams = ['dine-in', 'delivery', 'carry-out', 'bar', 'slice-line'];
+            let counter = '';
+            array.filter(function(item){
+                let value = allowedParams.indexOf(item);
+                if (value === -1){counter = false;}
+            })
+            let status = function(counter){
+                if (counter === false) {return false
+               } else {return true}
+            } 
+            return status(counter);
+        })
+        .withMessage('invalid params: only dine-in, delivery, carry-out, bar, or slice-line are valid params')
+    req.checkBody('tags')
+        .notEmpty().withMessage('at least one tag is required')
+    req.checkBody('ingredients')
+        .notEmpty().withMessage('at least one ingredient is required')
+        .custom(val => {
+            let array = val.split(',');
+            let counter = '';
+            array.filter((item) => {
+                if (item.length !== 24){counter = false}
+            })
+            let status = (counter) => {
+                if (counter === false){
+                    return false
+                } else {
+                    return true
+                }
+            }
+            return status(counter)
+        }).withMessage('malformed params: ingredient ids must be 24 alphanumeric chars')
+    req.checkBody('locations')
+        .notEmpty().withMessage('at least one location is required')
+        .custom(val => {
+            let array = val.split(',');
+            let counter = '';
+            array.filter((item) => {
+                if (item.length !== 24){counter = false}
+            })
+            let status = (counter) => {
+                if (counter === false) {return false
+                } else {
+                    return true
+                }
+            }
+            return status(counter)
+        }).withMessage('malformed params: location ids must be 24 alphanumeric chars')
+    req.checkBody('category')
+        .notEmpty().withMessage('category missing')
+        .custom(val => {
+            
+            let allowedParams = ['appetizers', 'salads', 'pastas', 'deli_style_hoagies',
+            'parmigiana_hoagies', 'specialty_pizza', 'desserts', 'beer', 'cocktails', 'red_wine',
+            'white_wine', 'bar', 'happy_hour', 'slices'];
+            console.log(val)
+            let counter = '';
+            
+            let value = allowedParams.indexOf(val);
+            if (value === -1){
+                counter = false;
+            }
+            let status = (counter) => {
+                if (counter === false){
+                    return false
+                } else {
+                    return true
+                }
+            }
+            return status(counter)
+        }).withMessage('malformed params: category value not allowed')
+        req.checkBody('prices')
+            .notEmpty().withMessage('Price array is missing')
+        if (req.body.prices && req.body.category === 'salads'){
+            req.checkBody('prices')
+            .notEmpty().withMessage('prices cannot be empty')
+            .custom(val => {
+                let counter = '';
+                let p = JSON.parse(val);
+                let typeParams = ['sm', 'lg', 'party'];
+                let textParams = ['small', 'large', 'party-size'];
+                
+                for (let i = 0; i < p.length; i++){
+                    let typeValue = typeParams.indexOf(p[i].type);
+                    let textValue = textParams.indexOf(p[i].text);
+                    console.log(typeValue);
+                    console.log(textValue)
+                    if (typeValue === -1 || textValue === -1){
+                        counter = false;
+                        return counter;
+                    } else {
+                        counter = true;
+                    }
+                }
+                console.log(counter)
+                let status = (counter) => {
+                    if (counter === false){
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                return status(counter);
+            }).withMessage('missing params')
+        } 
+        /* if (req.body.category === 'appetizers'){
+            req.checkBody('prices')
+            .notEmpty().withMessage('prices cannot be empty')
+            .custom(val => {
+                let counter = false;
+                let prices = JSON.parse(req.body.prices);
+                let tags = [req.body.tags]
+                
+                let type = prices[0].type,
+                    text = prices[0].text,
+                    amount = prices[0].amount,
+                    type2 = prices[1].type,
+                    text2 = prices[1].text,
+                    amount2 = prices[1].amount; 
+                    let tags2 = req.body.tags.split(',')
+                    const p = prices; */
+
+                       
+            /*    for (let i = 0; i < prices.length; i++){
+                
+                    if (prices[i].type && prices[i].text && prices[i].amount){
+                        if (prices[i].type == 'reg' || prices[i].type == 'party' && prices[i].text == 'regular' || prices[i].text == 'party-size'){
+                            if (tags2.length > 0){
+                                console.log('passed req, party')
+                                for (let j = 0; j < tags2.length; j++){
+                                    if (tags2[j] == 'v'){
+                                        if (prices[i].type == 'vegan' || prices[i].type == 'vegan_party' && prices[i].text == "get_it_vegan" || prices[i].text == "Vegan Party Size") {
+                                            console.log(prices[i].type)
+                                            console.log('type, text and amount are good')
+                                        } else {
+                                            console.log('vegan fail')
+                                        }
+                                    } else if (tags2[j] == 'gfr'){
+                                        if (prices[i].type == 'gfr' || prices[i].type == 'gfr_party' && prices[i].text == "Get it gluten-free" || prices[i].text == "gluten free party size") {
+                                            console.log('type, text and amount are good')
+                                        } else {
+                                            console.log('gf fail')
+                                        }    
+                                    } else {
+                                        console.log('no tags')
+                                    }
+                                }
+                            }
+                            
+                            
+                            
+                        } else {
+                            console.log('type and text failed')
+                        }
+                          
+                    } else {
+                        console.log('something failed')
+                    } 
+                    
+                    
+                    
+                } */
+               
+                
+           /*  if (!type || type !== "reg" || !text || text !=="Regular" || amount == null || !amount || amount < 0 ){
+                    counter = false;
+                } else if (!type2 || type2 !== "party" || !text2 || text2 !=="Party Size" || amount2 == null || !amount2 || amount2 < 0 ){
+                    counter = false;
+                } else  {
+                    
+                } */
+                
+           /*     array.filter(function(item){
+                let value = allowedParams.indexOf(item);
+                if (value === -1){counter = false;}
+                }) 
+                
+                let status = (counter) => {
+                    if (counter === false){
+                        return false
+                    } else {
+                        return true
+                    }
+                }
+                return status(counter)
+            }).withMessage('malformed params: price array params not for category type')
+        } else if (req.body.category === 'salads') {
+            req.checkBody('prices')
+            .notEmpty().withMessage('prices cannot be empty') */
+        
+         
+    
+    req.asyncValidationErrors().then(function(){
+        next()
+    }).catch(function(errors){
+        let msg = {
+            status: 400,
+            errors: errors
+        }
+        res.status(400).send(msg);
+    })
+}
+
+
 exports.post_test = (req, res) => {
+    
+    
     const item = {
         name: req.body.name,
         description: [],
         locations: req.body.locations,
-        category: [],
-        order_types: req.body.order_types,
+        order_types: req.body.order_type,
         tags: req.body.tags,
         ingredients: req.body.ingredients,
         notes: req.body.notes,
@@ -36,9 +251,8 @@ exports.post_test = (req, res) => {
     for (let i = 0; i < req.body.ot_name.length; i++){
         item.description.push({name: req.body.ot_name[i], description: req.body.ot_desc[i]})
     }
-    
    
-    console.log(item)
+  
 
     Item.create(item, (err, newlyCreated) => {
             if (err) {
@@ -53,65 +267,103 @@ exports.post_test = (req, res) => {
 
 
 //Post Item
-exports.post_item_create = (req, res) => {
+
+
+
+exports.post_item_create = (req, res, next) => {
     
     
-    let array = req.body.ingredients;
+    let ingredients = req.body.ingredients;
+        ingredients = ingredients.split(',')
     let locations = req.body.locations;
-    let newlocations = locations.split(',');
-    let newArray = array.split(',')
+        locations = locations.split(',');
     let tags = req.body.tags;
-    tags = tags.split(",");
-    
+        tags = tags.split(",");
     let order_types = req.body.order_types;
-    order_types = order_types.split(",");
+        order_types = order_types.split(",");
     
+   let dine_in_description = req.body.dine_in_description;
+   let delivery_description = req.body.delivery_description
+   let carry_out_description = req.body.carry_out_description
+   
+   // preserve newlines, etc - use valid JSON
+    let prices = req.body.prices
+    prices = JSON.parse(req.body.prices)
+  
     const item = {
         name: req.body.name,
         description: [],
-        locations: newlocations,
         category: req.body.category,
+        locations: locations,
         order_types: order_types,
-        tags: req.body.tags,
-        ingredients: newArray,
+        tags: tags,
+        ingredients: ingredients,
         notes: req.body.notes,
         image: {
             image_name: req.file.filename,
             upload_date: Date.now(),
             url: './uploads/menus/item/' + req.file.filename
         },
-        prices: []
+        prices: prices
     };
     
-    for (let i = 0; i < order_types.length; i++) {
-        if (order_types[i] === "dine-in") {
-            item.description.push({
-                order_type: order_types[i],
-                description: req.body.dine_in_description
-            });
-        } else if (order_types[i] === "delivery"){
-            item.description.push({
-                order_type: order_types[i],
-                description: req.body.delivery_description
-            });
-        } else if (order_types[i] === "carry-out"){
-             item.description.push({
-                order_type: order_types[i],
-                description: req.body.carry_out_description
-            });
-        } else {
-            
-        }
-    }
+   
+  
     
-    function sortPrices(category, tags){
+    
+  
+    
+        Item.create(item, (err, newlyCreated) => {
+            if (err) {
+                res.status(500).send(err)
+            } else {
+                res.json(newlyCreated);
+            }
+        })
+    
+     
+    
+function processOrderTypes(item){
+        let description = [];
+        
+            
+       
+            for (let i = 0; i < item.order_types.length; i++) {
+            if (item.order_types[i] === "dine-in") {
+                description.push({
+                    order_type: item.order_types[i],
+                    description: dine_in_description
+                });
+            } else if (item.order_types[i] === "delivery"){
+                description.push({
+                    order_type: item.order_types[i],
+                    description: delivery_description
+                });
+            } else if (item.order_types[i] === "carry-out"){
+                description.push({
+                    order_type: item.order_types[i],
+                    description: carry_out_description
+                });
+            } 
+        }
+        
+        
+        
+    }
+ 
+  /*  function sortPrices(category, tags){
             category = category.toLowerCase()
             console.log(tags)
             switch (category) {
               
                 case 'appetizers':
-                     console.log('appetizers')
-                     item.prices.push(
+                     
+                     if (!req.body.reg || !req.body.party){
+                        
+                           // return res.status(400).send({status: 400, message: 'incomplete data - missing key'})
+                        errorHandler(400, 'incomplete data - missing key')
+                     } else {
+                         item.prices.push(
                          {
                             type: "reg",
                             id: "reg",
@@ -125,6 +377,8 @@ exports.post_item_create = (req, res) => {
                              amount: req.body.party
                          }
                          );
+                     }
+                     
                     for (var a = 0; a < tags.length; a++){
                         if (tags[a] === "VR") {
                            item.prices.push(
@@ -263,17 +517,48 @@ exports.post_item_create = (req, res) => {
                     break;
                 default:
             }
-        }
-        sortPrices(req.body.category, tags)
+        } */
+        
+ 
     
-    Item.create(item, (err, newlyCreated) => {
-            if (err) {
-                console.log(err)
-            } else {
-                res.status(200).send({status: 200, message: 'Post succeeded', data: newlyCreated})
-            }
-        })
+ // sortPrices(req.body.categunction makeItem(item){
+       
+   
+       
+}       
+ 
+
+ 
+    
+    
+    //1. build object
+    //2. process ordertype
+    //3. process category & pricess
+    //4. create item 
+    
+
+
+//Item Mongoose Map Post Test
+exports.post_test_map = (req, res) => {
+    const item = {
+        name: req.body.name,
+        description: [],
+        locations: req.body.locations,
+        order_types: req.body.order_type,
+        tags: req.body.tags,
+        ingredients: req.body.ingredients,
+        notes: req.body.notes,
+        image: {
+            image_name: req.file.filename,
+            upload_date: Date.now(),
+            url: './uploads/menus/item/' + req.file.filename
+        },
+        prices: [],
+        cost: []
+    };
 }
+
+
 
 
 //Delete and item

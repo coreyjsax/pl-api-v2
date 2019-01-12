@@ -15,6 +15,8 @@ router.get('/:id/untappd/full', api_location_controller.location_get_by_id_untap
 
 router.get('/:location_id/untappd/full/:menu_id', api_location_controller.location_get_by_id_untappd_menu_by_id_full);
 
+router.get('/:location_id/slices/full/:menu_id', api_location_controller.location_get_by_id_untappd_custom_menu_by_id_full);
+
 router.get('/:location_id/delivery', api_location_controller.location_get_by_id_delivery_area);
 
 router.get('*', (req, res) => {
