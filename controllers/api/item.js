@@ -22,6 +22,8 @@ exports.validate_item = (req, res, next) => {
     req.checkBody('order_types')
         .custom(val => {
             let array = val.split(',');
+            
+            console.log(array)
             let allowedParams = ['dine-in', 'delivery', 'carry-out', 'bar', 'slice-line'];
             let counter = '';
             array.filter(function(item){
@@ -80,7 +82,7 @@ exports.validate_item = (req, res, next) => {
         .custom(val => {
             
             let allowedParams = ['appetizers', 'salads', 'pasta', 'hoagies',
-            'specialty_pizza', 'desserts', 'beer', 'cocktails', 'red_wine',
+            'pizza', 'desserts', 'beer', 'cocktails', 'red_wine',
             'white_wine', 'bar', 'happy_hour', 'slices', 'platter'];
             console.log(val);
             let counter = '';
@@ -166,7 +168,115 @@ exports.validate_item = (req, res, next) => {
                 };
                 return status(counter);
             }).withMessage('malformed params: price params do not match category')
-        } else if (req.body.prices && req.body.category === 'hoagies')
+        } else if (req.body.prices && req.body.category === 'hoagies'){
+            req.checkBody('prices')
+            .notEmpty().withMessage('missing params: hoagies prices objects required')
+            .custom(val => {
+                let counter = '';
+                let p = JSON.parse(val);
+                let typeParams = ['reg', 'vr'];
+                let textParams = ['regular','get_it_vegan'];
+                let tagValue = typeParams.indexOf('vr');
+                let tags = req.body.tags.split(',');
+                
+                if (tags.includes('vr')){
+                        for (let i = 0; i < p.length; i++){
+                            let typeValue = typeParams.indexOf(p[i].type),
+                                textValue = textParams.indexOf(p[i].text);
+                                if (typeValue === -1 || textValue === -1 || p.length < 2){
+                                    counter = false;
+                                    return counter;
+                                }
+                        }
+                    } else {
+                        console.log('no vr')
+                        if (p.length === 1){
+                            if (p[0].type && p[0].text && p[0].amount){
+                                if (p[0].type !== "reg" || p[0].text !== "regular" || p[0].amount === null) {
+                                    
+                                    counter = false;
+                                    return false;
+                                } counter = true;
+                            } else {
+                                counter = false;
+                                return false;
+                            }
+                        } else {
+                            counter = false;
+                            return false;
+                        }
+                        
+                    }
+                
+                let status = (counter) => {
+                    if (counter === false){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                };
+                return status(counter);
+            }).withMessage('malformed params: price params do not match hoagie category')
+        } else if (req.body.prices && req.body.category === 'pizza'){
+                req.checkBody('prices')
+                .notEmpty().withMessage('missing params: pizza prices objects required')
+                .custom(val => {
+                    let counter = '';
+                    let p = JSON.parse(val);
+                    let typeParams = ['sm','med','lg','gfr'];
+                    let textParams = ['s','m','l','gf'];
+                    let tagValue = typeParams.indexOf('gfr');
+                    let tags = req.body.tags.split(',');
+                    
+                    if (tags.includes('gfr')){
+                            for (let i = 0; i < p.length; i++){
+                                let typeValue = typeParams.indexOf(p[i].type),
+                                    textValue = textParams.indexOf(p[i].text);
+                                
+                                if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                                    counter = false;
+                                    return counter;
+                                } else if (typeValue !== textValue) {
+                                     counter = false;
+                                     return counter;
+                                } 
+                            }
+                    } else {
+                        console.log('no gfr')
+                        if (p.length === 3){
+                            console.log('3')
+                            
+                            typeParams.pop(); //remove GFR from array
+                            textParams.pop();
+                            
+                            for (let i = 0; i < p.length; i++){
+                                let typeValue = typeParams.indexOf(p[i].type),
+                                    textValue = textParams.indexOf(p[i].text);
+                                
+                                if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                                    counter = false;
+                                    return counter;
+                                } else if (typeValue !== textValue) {
+                                     counter = false;
+                                     return counter;
+                                } 
+                            }
+                        
+                        } else {
+                            counter = false;
+                            return counter;
+                        }
+                    }
+                    let status = (counter) => {
+                    if (counter === false){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                };
+                return status(counter);
+                })
+        }
         /* if (req.body.category === 'appetizers'){
             req.checkBody('prices')
             .notEmpty().withMessage('prices cannot be empty')
@@ -327,9 +437,12 @@ exports.post_item_create = (req, res, next) => {
    let carry_out_description = req.body.carry_out_description
    
    // preserve newlines, etc - use valid JSON
-    let prices = req.body.prices
-    prices = JSON.parse(req.body.prices)
-  
+    
+    let prices = JSON.parse(req.body.prices);
+   
+    
+    prices = prices.map(price => ({type: price.type, text:price.text, amount: parseFloat(price.amount)}))
+    
     const item = {
         name: req.body.name,
         description: [],
@@ -347,7 +460,7 @@ exports.post_item_create = (req, res, next) => {
         prices: prices
     };
     
-   
+    
   
     
     
