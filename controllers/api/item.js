@@ -16,9 +16,9 @@ const fs = require('fs');
 exports.validate_item = (req, res, next) => {
     req.checkBody('name')
         .notEmpty().withMessage('name required')
-        .isLength({min: 3}).withMessage('name must by 3+ chars')
+        .isLength({min: 3}).withMessage('name must by 3+ chars');
     req.checkBody('locations')
-        .notEmpty().withMessage('location required')
+        .notEmpty().withMessage('location required');
     req.checkBody('order_types')
         .custom(val => {
             let array = val.split(',');
@@ -26,17 +26,22 @@ exports.validate_item = (req, res, next) => {
             let counter = '';
             array.filter(function(item){
                 let value = allowedParams.indexOf(item);
-                if (value === -1){counter = false;}
-            })
+                if (value === -1){
+                    counter = false;
+                }
+            });
             let status = function(counter){
-                if (counter === false) {return false
-               } else {return true}
-            } 
+                if (counter === false){
+                    return false;
+               } else {
+                   return true;
+               }
+            }; 
             return status(counter);
         })
-        .withMessage('invalid params: only dine-in, delivery, carry-out, bar, or slice-line are valid params')
+        .withMessage('invalid params: only dine-in, delivery, carry-out, bar, or slice-line are valid params');
     req.checkBody('tags')
-        .notEmpty().withMessage('at least one tag is required')
+        .notEmpty().withMessage('at least one tag is required');
     req.checkBody('ingredients')
         .notEmpty().withMessage('at least one ingredient is required')
         .custom(val => {
@@ -44,16 +49,16 @@ exports.validate_item = (req, res, next) => {
             let counter = '';
             array.filter((item) => {
                 if (item.length !== 24){counter = false}
-            })
+            });
             let status = (counter) => {
                 if (counter === false){
-                    return false
+                    return false;
                 } else {
-                    return true
+                    return true;
                 }
-            }
-            return status(counter)
-        }).withMessage('malformed params: ingredient ids must be 24 alphanumeric chars')
+            };
+            return status(counter);
+        }).withMessage('malformed params: ingredient ids must be 24 alphanumeric chars');
     req.checkBody('locations')
         .notEmpty().withMessage('at least one location is required')
         .custom(val => {
@@ -61,23 +66,23 @@ exports.validate_item = (req, res, next) => {
             let counter = '';
             array.filter((item) => {
                 if (item.length !== 24){counter = false}
-            })
+            });
             let status = (counter) => {
-                if (counter === false) {return false
+                if (counter === false) {return false;
                 } else {
-                    return true
+                    return true;
                 }
-            }
-            return status(counter)
-        }).withMessage('malformed params: location ids must be 24 alphanumeric chars')
+            };
+            return status(counter);
+        }).withMessage('malformed params: location ids must be 24 alphanumeric chars');
     req.checkBody('category')
         .notEmpty().withMessage('category missing')
         .custom(val => {
             
-            let allowedParams = ['appetizers', 'salads', 'pastas', 'deli_style_hoagies',
-            'parmigiana_hoagies', 'specialty_pizza', 'desserts', 'beer', 'cocktails', 'red_wine',
-            'white_wine', 'bar', 'happy_hour', 'slices'];
-            console.log(val)
+            let allowedParams = ['appetizers', 'salads', 'pasta', 'hoagies',
+            'specialty_pizza', 'desserts', 'beer', 'cocktails', 'red_wine',
+            'white_wine', 'bar', 'happy_hour', 'slices', 'platter'];
+            console.log(val);
             let counter = '';
             
             let value = allowedParams.indexOf(val);
@@ -86,18 +91,18 @@ exports.validate_item = (req, res, next) => {
             }
             let status = (counter) => {
                 if (counter === false){
-                    return false
+                    return false;
                 } else {
-                    return true
+                    return true;
                 }
-            }
-            return status(counter)
-        }).withMessage('malformed params: category value not allowed')
+            };
+            return status(counter);
+        }).withMessage('malformed params: category value not allowed');
         req.checkBody('prices')
-            .notEmpty().withMessage('Price array is missing')
+            .notEmpty().withMessage('Price array is missing');
         if (req.body.prices && req.body.category === 'salads'){
             req.checkBody('prices')
-            .notEmpty().withMessage('prices cannot be empty')
+            .notEmpty().withMessage('missing params: salad prices objects required')
             .custom(val => {
                 let counter = '';
                 let p = JSON.parse(val);
@@ -105,28 +110,63 @@ exports.validate_item = (req, res, next) => {
                 let textParams = ['small', 'large', 'party-size'];
                 
                 for (let i = 0; i < p.length; i++){
-                    let typeValue = typeParams.indexOf(p[i].type);
-                    let textValue = textParams.indexOf(p[i].text);
-                    console.log(typeValue);
-                    console.log(textValue)
-                    if (typeValue === -1 || textValue === -1){
+                    
+                    let typeValue = typeParams.indexOf(p[i].type),
+                        textValue = textParams.indexOf(p[i].text);
+                        
+                    if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
                         counter = false;
                         return counter;
+                    } else if (typeValue !== textValue) {
+                         counter = false;
+                         return counter;
                     } else {
-                        counter = true;
+                         counter = true;
                     }
                 }
-                console.log(counter)
                 let status = (counter) => {
                     if (counter === false){
-                        return false
+                        return false;
                     } else {
-                        return true
+                        return true;
+                    }
+                };
+                return status(counter);
+            }).withMessage('malformed params: price params do not match category')
+        } else if (req.body.prices && req.body.category === 'pasta'){
+             req.checkBody('prices')
+            .notEmpty().withMessage('missing params: pasta prices objects required')
+            .custom(val => {
+                let counter = '';
+                let p = JSON.parse(val);
+                let typeParams = ['reg', 'party'];
+                let textParams = ['regular', 'party-size'];
+                
+                for (let i = 0; i < p.length; i++){
+                    
+                    let typeValue = typeParams.indexOf(p[i].type),
+                        textValue = textParams.indexOf(p[i].text);
+                        
+                    if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                        counter = false;
+                        return counter;
+                    } else if (typeValue !== textValue) {
+                         counter = false;
+                         return counter;
+                    } else {
+                         counter = true;
                     }
                 }
+                let status = (counter) => {
+                    if (counter === false){
+                        return false;
+                    } else {
+                        return true;
+                    }
+                };
                 return status(counter);
-            }).withMessage('missing params')
-        } 
+            }).withMessage('malformed params: price params do not match category')
+        } else if (req.body.prices && req.body.category === 'hoagies')
         /* if (req.body.category === 'appetizers'){
             req.checkBody('prices')
             .notEmpty().withMessage('prices cannot be empty')
