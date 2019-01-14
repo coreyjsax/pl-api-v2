@@ -268,15 +268,113 @@ exports.validate_item = (req, res, next) => {
                         }
                     }
                     let status = (counter) => {
-                    if (counter === false){
-                        return false;
-                    } else {
-                        return true;
-                    }
+                        if (counter === false){
+                            return false;
+                        } else {
+                            return true;
+                        }
                 };
                 return status(counter);
-                })
-        }
+                }).withMessage('malformed params: price params do not match pizza category');
+        } else if (req.body.prices && req.body.category === 'dessert'){
+                req.checkBody('prices')
+                .notEmpty().withMessage('missing params: dessert prices objects required')
+                .custom(val => {
+                    let counter = '';
+                    let p = JSON.parse(val);
+                    let nameArray = req.body.name.split(' ');
+                    if(nameArray.includes('bar') || nameArray.includes('brownie') || nameArray.includes('platter')){
+                        
+                    }
+                    
+                }).withMessage('malformed params: price params do not match dessert category');
+        } else if (req.body.prices && req.body.category === 'appetizers'){
+                req.checkBody('prices')
+                .notEmpty().withMessage('missing params: pizza prices objects required')
+                .custom(val => {
+                    let counter = '';
+                    let p = JSON.parse(val);
+                    let typeParams = ['reg','party','v','vegan_party','gfr','gf_party'];
+                    let textParams = ['regular','party-size','vegan','vegan-party-size','gluten-free','gf-party-size'];
+                    let tagValue = typeParams.indexOf('gfr');
+                    let tags = req.body.tags.split(',');
+                    let diet = ['v','gfr','gf','vr'];
+                    if (tags.includes('vr') && tags.includes('gfr')){
+                        for (let i = 0; i < p.length; i++){
+                            let typeValue = typeParams.indexOf(p[i].type),
+                                textValue = textParams.indexOf(p[i].text);
+                            
+                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                                    console.log('-1')
+                                    counter = false;
+                                    return counter;
+                            } else if (typeValue !== textValue) {
+                                    console.log('no match')
+                                     counter = false;
+                                     return counter;
+                            } 
+                        }
+                    } else if (tags.includes('vr') && !tags.includes('gfr')){
+                        let updatedType = typeParams.filter(el => el !== 'gfr' && el !== 'gf_party');
+                        let updatedText = textParams.filter(el => el !== 'gluten-free' && el !== 'gf-party-size');
+                       
+                        for (let i = 0; i < p.length; i++){
+                            let typeValue = updatedType.indexOf(p[i].type),
+                                textValue = updatedText.indexOf(p[i].text);
+                                
+                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p.length < updatedType.length){
+                                    counter = false;
+                                    return counter;
+                            } else if (typeValue !== textValue) {
+                                    counter = false;
+                                    return counter;
+                            } 
+                        }
+                        
+                    } else if (tags.includes('gfr') && !tags.includes('vr')){
+                        let updatedType = typeParams.filter(el => el !== 'vr' && el !== 'vegan_party');
+                        let updatedText = textParams.filter(el => el !== 'vegan' && el !== 'vegan-party-size');
+                        
+                        for (let i = 0; i < p.length; i++){
+                            let typeValue = updatedType.indexOf(p[i].type),
+                                textValue = updatedText.indexOf(p[i].text);
+                                
+                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p.length < updatedType.length){
+                                    counter = false;
+                                    return counter;
+                            } else if (typeValue !== textValue) {
+                                    counter = false;
+                                    return counter;
+                            } 
+                        }
+                    } else if (!tags.includes('gfr') && !tags.includes('vr')){
+                        let updatedType = typeParams.filter(el => el !== 'vr' && el !== 'vegan_party' && el !== 'gfr' && el !== 'gf-party');
+                        let updatedText = textParams.filter(el => el !== 'vegan' && el !== 'vegan-party-size' && el !== 'gluten-free' && 'gf-party-size');
+                        
+                        for (let i = 0; i < p.length; i++){
+                            let typeValue = updatedType.indexOf(p[i].type),
+                                textValue = updatedText.indexOf(p[i].text);
+                                
+                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p.length < updatedType.length){
+                                    counter = false;
+                                    return counter;
+                            } else if (typeValue !== textValue) {
+                                    counter = false;
+                                    return counter;
+                            } 
+                        }
+                    }
+                    
+                    let status = (counter) => {
+                        if (counter === false){
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+                    return status(counter);
+                }).withMessage('malformed params: price params do not match appetizer category')
+        } 
         /* if (req.body.category === 'appetizers'){
             req.checkBody('prices')
             .notEmpty().withMessage('prices cannot be empty')
