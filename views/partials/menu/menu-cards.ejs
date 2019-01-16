@@ -170,9 +170,11 @@ function menuGalleryController(){
     }
     function createDishController(){
         let form = document.getElementById('add-item');
-        console.log(form)
+        
+    
         form.addEventListener('click', (event) => {
             let target = event.target;
+            console.log(target)
             if (target.closest('#order-type')) {
                 let selected = document.getElementById('order_type_dropdown').parentElement;
                 let ordertypes = selected.querySelectorAll('a');
@@ -180,7 +182,6 @@ function menuGalleryController(){
                 for (let i = 0; i < ordertypes.length; i++){
                     tmp.push(ordertypes[i].getAttribute('data-value'));
                 }
-                console.log(tmp)
                 buildDescInputs(tmp)
             } else if (target.closest('#select-ingredients')){
                 let selected = document.getElementById('ingredients_dropdown').parentElement;
@@ -191,6 +192,28 @@ function menuGalleryController(){
                 }
             
                 buildIngredInputs(ingredientArray)
+            } else if (target.matches('#submit-button')){
+                event.preventDefault()
+                let formFields = form.querySelectorAll('input');
+                let formSelects = form.querySelectorAll('select');
+                let formFields2 = Array.from(formFields);
+                let formSelects2 = Array.from(formSelects);
+                let newItem = {
+
+                }
+                let name = formFields2.find(inputs => inputs.getAttribute('name') == 'name');
+                    newItem.name = name.value;
+                let image = formFields2.find(inputs => inputs.getAttribute('name') == 'imagename');
+                    newItem.imagename = image.files
+                let locations = document.getElementById('select-locations');
+                let selected_locations = locations.querySelector('.selection');
+                let chosen = selected_locations.querySelectorAll('a');
+                let locationIds = [];
+                for (var i = 0; i < chosen.length; i++){
+                    locationIds.push(chosen[i].getAttribute('data-value'))
+                }
+                newItem.locations = locationIds;
+                console.log(newItem)
             }
         })
         
@@ -242,7 +265,163 @@ function menuGalleryController(){
         
     }
     
-   
+    function sortPrices(category, tags){
+            category = category.toLowerCase();
+            switch (category) {
+                case 'appetizers':
+                     console.log('appetizers')
+                     item.prices.push(
+                         {
+                            type: "reg",
+                            id: "reg",
+                            text: "Regular",
+                            amount: req.body.reg
+                         },
+                         {
+                             type: "party",
+                             id: "party",
+                             text: "Party Size",
+                             amount: req.body.party
+                         }
+                         );
+                    for (var a = 0; a < tags.length; a++){
+                        if (tags[a] === "VR") {
+                           item.prices.push(
+                                {
+                                    type: "vegan",
+                                    id: "V",
+                                    text: "Get it Vegan",
+                                    amount: req.body.vegan
+                                },
+                                {
+                                    type: "vegan_party",
+                                    id: "VPS",
+                                    text: "Vegan Party Size",
+                                    amount: req.body.vegan_party
+                                }
+                            );
+                        } else if (tags[a] === "GFR") {
+                            item.prices.push(
+                                {  
+                                    type: "gluten_free_on_request",
+                                    id: "GFR",
+                                    text: "Get it GF",
+                                    amount: req.body.gluten_free_on_request
+                                },
+                                {   
+                                    type: "gluten_free_on_request_party",
+                                    id: "GFRPS",
+                                    text: "GF Party Size",
+                                    amount: req.body.gluten_free_on_request_party
+                                }
+                            );
+                        }
+                    }
+                    
+                    break;
+                case 'salads':
+                    item.prices.push(
+                        {   
+                            type: 'sm',
+                            id: 'sm',
+                            text: "Sm",
+                            amount: req.body.sm
+                        },
+                        {   
+                            type: "lg",
+                            price: "lg",
+                            text: "Lg",
+                            amount: req.body.lg
+                        },
+                        {   type: "party",
+                            id: "PS",
+                            text: "Party Size",
+                            amount: req.body.party
+                        }
+                    );
+                    break;
+                case 'pasta': 
+                    item.prices.push(
+                        {   type: 'reg',
+                            id: "reg",
+                            text: "Regular",
+                            amount: req.body.reg
+                        },
+                        {   type: 'party',
+                            id: "ps",
+                            text: "Party Size",
+                            amount: req.body.party
+                        }
+                    );
+                    break;
+                case 'parmigiana hoagies':
+                    item.prices.push(
+                        {   type: 'reg',
+                            id: "reg",
+                            text: "Regular",
+                            amount: req.body.reg
+                        }
+                    );
+                    break;
+                case 'deli style hoagies':
+                   item.prices.push({
+                            type: 'reg',
+                            id: "reg",
+                            text: "Regular",
+                            amount: req.body.reg
+                        });
+                    break;
+                case 'specialty pizza':
+                   item.prices.push(
+                        {   type: 'sm',
+                            id: 'sm | 10"',
+                            text: 'Sm | 10"',
+                            amount: req.body.sm
+                        },
+                        {
+                            type: 'med',
+                            id: 'med | 12"',
+                             text: 'Med | 12"',
+                            amount: req.body.med
+                        },
+                        {
+                            type: 'lg',
+                            id: 'lg| 16"',
+                             text: 'Lg | 16"',
+                            amount: req.body.lg
+                        }
+                    );
+                    for (var b = 0; b < tags.length; b++){
+                        if (tags[b] === "GFR") {
+                            item.prices.push({
+                                type: 'gf',
+                            id: 'gf | 10"',
+                             text: 'GF | 10"',
+                            amount: req.body.gf
+                            })
+                        }
+                    }
+                    break;
+                case 'desserts':
+                   item.prices.push({
+                            type: 'reg',
+                            id: "reg",
+                            text: "Regular",
+                            amount: req.body.reg
+                        })
+                    for (var c = 0; c < tags.length; c++) {
+                        if (tags[c] === "lg_party") {
+                            item.prices.push({
+                                type: 'party',
+                                id: 'PS',
+                                text: "Party Size",
+                                amount: req.body.party
+                            })
+                        }
+                    }
+                    break;
+                default:
+            }
         }
         sortPrices(req.body.category, tags)
 }

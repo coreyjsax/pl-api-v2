@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const request = require('request-promise-cache');
 const multer = require('multer');
+const fileType = require('file-type');
+const fs = require('fs');
 
 exports.tools = {
     dateTime: function(){
@@ -28,10 +30,8 @@ exports.tools = {
 
 //Menu Item Image Upload
 exports.Storage_Item = multer.diskStorage({
-    destination: function(req, file, callback){
-         console.log('============')
-        console.log(req.params.id)
-        callback(null, "./public/uploads/menus/item");
+    destination: function(req, file, callback, err){
+        callback(null, './public/uploads/menus/item')
     },
     filename: function(req, file, callback){
         var raw_title = req.body.name + Date.now();
@@ -41,15 +41,39 @@ exports.Storage_Item = multer.diskStorage({
     }
 });
 
+const accepted_extensions = ['jpg', 'png'];
+const maxSize = 1 * 1000 * 1000;
+
+
 exports.upload_item = multer({
+ 
+   
     storage: exports.Storage_Item,
+    limits: {
+        fileSize: maxSize
+    },
+    fileFilter: function(req, file, cb){
+        
+        if (!file) {
+            req.fileValidationError = 'file upload required'
+            return cb(null, false, new Error('file missing'))
+        }else if (file.mimetype !== 'image/jpg' && file.mimetype !== 'image/png'){
+            req.fileValidationError = 'incorrect mimetype';
+            return cb(null, false, new Error('wrong file type'))
+        }
+        cb(null, true)
+    }
+   
 }); //Field name and max count
+
+
 
 //Menu Category Image Upload
 exports.Storage_Category = multer.diskStorage({
     destination: function(req, file, callback){
         callback(null, "./public/uploads/categories");
     }, filename: function(req, file, callback){
+       
         var raw_title = req.body.name;
         var raw_title2 = raw_title.toLowerCase();
         var title = raw_title = raw_title2.replace(/\s/g, '_');

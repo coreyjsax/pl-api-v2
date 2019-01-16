@@ -24,6 +24,8 @@ exports.get_locations = (req, res) => {
     });
 };
 
+
+
 //Get location by ID
 exports.get_location_by_id = (req, res) => {
     let payload = {};

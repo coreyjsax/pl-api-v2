@@ -5,6 +5,8 @@ const express = require('express'),
       io = require('socket.io').listen(server),
       bodyParser = require('body-parser'),
       cors = require('cors'),
+      fileType = require('file-type'),
+      jwt = require('jsonwebtoken'),
       methodOverride = require('method-override'),
       moment = require('moment'),
       mongoose = require('mongoose'),
@@ -59,7 +61,9 @@ const //api routes
       //menu board routes
       menuBoardRoutes = require('./routes/menu_boards'),
       //admin panel routes
-      admin_panel_index_routes = require('./routes/admin_panel/index');
+      admin_panel_index_routes = require('./routes/admin_panel/index'),
+      //auth routes
+      auth_routes = require('./routes/auth/auth');
 
 
 app.use('/delivery', api_deliveryRoutes);
@@ -71,6 +75,8 @@ app.use('/ingredients', api_ingredientRoutes);
 app.use('/items', api_itemRoutes);
 app.use('/category', api_categoryRoutes);
 app.use('/admin', admin_panel_index_routes);
+app.use('/auth', auth_routes);
+
 app.use('/boards', menuBoardRoutes);
 
 //Express Middleware

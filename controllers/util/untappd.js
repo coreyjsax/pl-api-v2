@@ -127,3 +127,7 @@ exports.getAllCustomMenusByLocation = (locationId) => {
         return args;
     });
 }
+
+exports.post_new_menu = (locationId) => {
+   
+}
