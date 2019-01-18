@@ -12,13 +12,19 @@ const fs = require('fs');
 ////////////////////////
 //  Item Controllers  //
 ////////////////////////
-
+exports.post_test2 = (req, res) => {
+    let item = {
+        name: req.body.name,
+        prices: req.body.price
+    };
+     
+    console.log(req.body)
+    res.json('hi')
+}
 
 
 
 exports.post_test = (req, res) => {
-    
-    
     const item = {
         name: req.body.name,
         description: [],
@@ -35,12 +41,9 @@ exports.post_test = (req, res) => {
         prices: [],
         cost: []
     };
-    
-     
     for (let i = 0; i < req.body.ot_name.length; i++){
         item.description.push({name: req.body.ot_name[i], description: req.body.ot_desc[i]})
     }
-   
     Item.create(item, (err, newlyCreated) => {
         if (err) {
             res.send(err)
@@ -48,8 +51,6 @@ exports.post_test = (req, res) => {
             res.status(200).send({status: 200, message: 'Post succeeded', data: newlyCreated})
         }
     }) 
-       
-    
 }
 
 
@@ -69,10 +70,6 @@ exports.post_item_create = (req, res, next) => {
     let order_types = req.body.order_types;
         order_types = order_types.split(",");
     
-       let dine_in_description = req.body.dine_in_description;
-       let delivery_description = req.body.delivery_description
-       let carry_out_description = req.body.carry_out_description
-   
    // preserve newlines, etc - use valid JSON
     let description = JSON.parse(req.body.description)
     let prices = JSON.parse(req.body.prices);
@@ -89,6 +86,7 @@ exports.post_item_create = (req, res, next) => {
         notes: req.body.notes,
         prices: prices
     };
+    
 
     if (req.fileValidationError){
         res.status(415).send({
@@ -96,11 +94,10 @@ exports.post_item_create = (req, res, next) => {
             message: req.fileValidationError
         })
     } else if (!req.file) {
-        res.status(406).send({
+       res.status(406).json({
             status: 406,
             message: "Image upload of .jpg or .png required"
-        })
-        
+        }) 
     } else {
         item.image = {
             image_name: req.file.filename,
@@ -111,7 +108,7 @@ exports.post_item_create = (req, res, next) => {
             if (err) {
                 res.status(500).send(err)
             } else {
-                res.json(newlyCreated);
+                res.status(201).json({status: 201, data: newlyCreated});
             }
         })
     }
@@ -173,7 +170,7 @@ exports.get_items_all = (req, res) => {
             }
         } else {
             if (docs.length === 0) {
-                res.status(404).send({status: 404, message: 'No items found'});
+                res.status(202).send({status: 202, message: "collection is empty"})
             } else {
                 res.json(docs)
             }
@@ -626,11 +623,11 @@ exports.validate_item = (req, res, next) => {
                 }).withMessage('malformed params: price params do not match dessert category');
         } else if (req.body.prices && req.body.category === 'appetizers'){
                 req.checkBody('prices')
-                .notEmpty().withMessage('missing params: pizza prices objects required')
+                .notEmpty().withMessage('missing params: appetizer prices objects required')
                 .custom(val => {
                     let counter = '';
                     let p = JSON.parse(val);
-                    let typeParams = ['reg','party','v','vegan_party','gfr','gf_party'];
+                    let typeParams = ['reg','party','vr','vegan_party','gfr','gf_party'];
                     let textParams = ['regular','party-size','vegan','vegan-party-size','gluten-free','gf-party-size'];
                     let tagValue = typeParams.indexOf('gfr');
                     let tags = req.body.tags.split(',');
@@ -668,7 +665,7 @@ exports.validate_item = (req, res, next) => {
                     } else if (tags.includes('gfr') && !tags.includes('vr')){
                         let updatedType = typeParams.filter(el => el !== 'vr' && el !== 'vegan_party');
                         let updatedText = textParams.filter(el => el !== 'vegan' && el !== 'vegan-party-size');
-                        
+                        console.log(updatedType)
                         for (let i = 0; i < p.length; i++){
                             let typeValue = updatedType.indexOf(p[i].type),
                                 textValue = updatedText.indexOf(p[i].text);
@@ -682,9 +679,10 @@ exports.validate_item = (req, res, next) => {
                             } 
                         }
                     } else if (!tags.includes('gfr') && !tags.includes('vr')){
-                        let updatedType = typeParams.filter(el => el !== 'vr' && el !== 'vegan_party' && el !== 'gfr' && el !== 'gf-party');
-                        let updatedText = textParams.filter(el => el !== 'vegan' && el !== 'vegan-party-size' && el !== 'gluten-free' && 'gf-party-size');
-                        
+                        console.log('!gfr !vr')
+                        let updatedType = typeParams.filter(el => el !== 'vr' && el !== 'vegan_party' && el !== 'gfr' && el !== 'gf-party' && el !== 'v' && el !== 'gf_party');
+                        let updatedText = textParams.filter(el => el !== 'vegan' && el !== 'vegan-party-size' && el !== 'gluten-free' && 'gf-party-size' && el !== 'vegan' && el !== 'gf-party-size');
+                        console.log(updatedType)
                         for (let i = 0; i < p.length; i++){
                             let typeValue = updatedType.indexOf(p[i].type),
                                 textValue = updatedText.indexOf(p[i].text);
@@ -697,6 +695,8 @@ exports.validate_item = (req, res, next) => {
                                     return counter;
                             } 
                         }
+                    } else{
+                        counter = true;
                     }
                     
                     let status = (counter) => {

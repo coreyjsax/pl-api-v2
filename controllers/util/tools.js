@@ -5,6 +5,7 @@ const multer = require('multer');
 const fileType = require('file-type');
 const fs = require('fs');
 
+
 exports.tools = {
     dateTime: function(){
         let today = new Date();
@@ -42,7 +43,7 @@ exports.Storage_Item = multer.diskStorage({
 });
 
 const accepted_extensions = ['jpg', 'png'];
-const maxSize = 1 * 1000 * 1000;
+const maxSize = 1 * 7000 * 7000;
 
 
 exports.upload_item = multer({
@@ -57,7 +58,7 @@ exports.upload_item = multer({
         if (!file) {
             req.fileValidationError = 'file upload required'
             return cb(null, false, new Error('file missing'))
-        }else if (file.mimetype !== 'image/jpg' && file.mimetype !== 'image/png'){
+        }else if (file.mimetype !== 'image/jpg' && file.mimetype !== 'image/png' && file.mimetype !== "image/JPG"){
             req.fileValidationError = 'incorrect mimetype';
             return cb(null, false, new Error('wrong file type'))
         }

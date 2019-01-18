@@ -1,9 +1,14 @@
 
 
 <% include ../partials/head %>
+<div>
+<style scoped>
+    body {
+  background: #E55D87;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #5FC3E4, #E55D87);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #5FC3E4, #E55D87); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
-<style>
-    
+}
     .gallery {
         height:320px;
     }
@@ -68,12 +73,13 @@
                 
             </div>
         </div>
-        <div class="sidenav">
+        <div id="sidenav"class="sidenav">
             <a href="javascript:void(0)" class="closebtn">&times;</a>
             <a href="#">Menu</a>
             <a href="#">Services</a>
             <a href="#">Clients</a>
-            <a href="#">Contact</a>
+            <a id="contact" href="#">Contact</a>
+             <button onclick="myFunction()">Try it</button>
         </div>
         
     </div>
@@ -89,16 +95,25 @@
             <a href="#">Services</a>
             <a href="#">Clients</a>
             <a href="#">Contact</a>
+           
         </div>
         
     </div>
     
 </div>
-
+</div>
 
 
 <% include ../partials/foot %>
 <script>
+
+    function myFunction() {
+  var x = document.createElement("INPUT");
+  x.setAttribute("type", "file");
+  x.setAttribute("id", "myfile");
+  document.getElementById('sidenav').appendChild(x);
+ console.log(x)
+}
      
     function adminIndexController(){
       let page = document.getElementById('admin_page');
@@ -111,7 +126,44 @@
           } else if (target.matches('.closebtn')){
               let gallery = target.closest('.gallery');
               closeNav(gallery)
-          } 
+          } else if (target.matches('#contact')){
+              console.log('contact')
+              const fileInput = document.getElementById('myfile');
+              const file = fileInput.files[0];
+              
+              const body = new FormData
+body.append("name", "Bruschetta")
+
+body.append("tags", "vr,gfr")
+
+body.append("ingredients", "5c2d4a033f0d6f7e8547f01b,5c2d4a033f0d6f7e8547f01b")
+
+body.append("order_types", "dine-in,delivery,carry-out")
+
+body.append("locations", "5c2bbcfb53352c57e74314ff,5c2bbdff53352c57e7431500,5c2bbffc53352c57e7431501,5c2bc17e53352c57e7431502,5c2bc31653352c57e7431503,5c2bc3b553352c57e7431504,5c2bc47d53352c57e7431505,5c2bc51b53352c57e7431506,5c2bc75953352c57e7431507")
+
+body.append("category", "appetizers")
+
+body.append("prices", "[{\"type\":\"reg\",\"text\":\"regular\",\"amount\":\"8.79\"},{\"type\":\"party\",\"text\":\"party-size\",\"amount\":\"41.99\"},{\"type\":\"gfr\",\"text\":\"gluten-free\",\"amount\":\"10.99\"},{\"type\":\"gf_party\",\"text\":\"gf-party-size\",\"amount\":\"49.99\"},{\"type\":\"vr\",\"text\":\"vegan\",\"amount\":\"9.39\"},{\"type\":\"vegan_party\",\"text\":\"vegan-party-size\",\"amount\":\"44.39\"}]")
+
+body.append("description", "[{\"type\":\"delivery\",\"text\":\"Fresh tomatoes, garlic, basil and olive oil. Served with toasted ciabatta topped with melted mozzarella cheese.\"},{\"type\":\"dine-in\",\"text\":\"Named from the Italian verb bruschere that translates loosely as “to melt mozzarella on toasted ciabatta and serve with fresh tomatoes, garlic, basil and olive oil for about 6000 Lire.”\"},{\"type\":\"carry-out\",\"text\":\"Fresh tomatoes, garlic, basil and olive oil. Served with toasted ciabatta topped with melted mozzarella cheese.\"}]")
+body.append("imagename", file);
+//body.append("imagename", "@/OLO/artdip.png")
+
+fetch("https://pl-api-v2-coreyjsax.c9users.io/items/create", {
+  body,
+  headers: {
+    Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTQ3NTI4MTI5fQ.j9L92m-CAFM8GXDnN-voN_OzlVjkqMvxpE4ByZ0yCsE",
+  },
+  method: "POST"
+}).then((res) => {
+    let data = res.json();
+    return data;
+}).then((data) => {
+    console.log(data)
+})
+              
+          }
       })
       
     }

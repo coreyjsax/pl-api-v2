@@ -1,8 +1,9 @@
-  <form id="add-item" class="ui form" enctype="multipart/form-data"  action="./items/test" method="POST">
+  <div id = "create-item-form">
+  <form id="add-item" class="ui form">
         <div class="ui inverted segment">
         <div class="field">
             <label>Item Name</label>
-            <input type="text" name="name" placeholder="item name">
+            <input class="name" type="text" name="name" placeholder="item name">
         </div>
         <input class="form-control-file file-control-sm" type="file" name="imagename" />
         <div id="select-locations" class="field">
@@ -17,12 +18,22 @@
         <div id="location-form-data" class="fields">
             
         </div>
+        <div id="select-category" class="field">
+            <label>Category</label>
+            <select name="category" id="category_dropdown" class="ui fluid dropdown">
+                <option value="">Select a menu category</option>
+                <% let categories = ['appetizers', 'salads','pasta','hoagies','pizza','desserts','red_wine','white_wine','beer','slices']%>
+                <% for (let i = 0; i < categories.length; i++){ %>
+                <option value="<%=categories[i]%>"><%=categories[i]%></option>
+                <% }%>
+            </select>
+        </div>
         <div class="ui inverted olive segment">
             <div id="order-type" class="field">
                 <label>Order Types</label>
                 <select name="order_type" multiple="" id="order_type_dropdown" class="ui fluid search dropdown">
                     <option value="">select order types</option>
-                    <option value="delivery">Delivery</option>
+                    <option data-id="123" value="delivery">Delivery</option>
                     <option value="dine-in">Dine-in</option>
                     <option value="slice-line">Slice line</option>
                     <option value="bar">Bar</option>
@@ -49,17 +60,17 @@
         </div>
         <div id="item-diet-tags" class="field">
             <label>Dietary Tags</label>
-            <select name="tags" multiple="" class="ui fluid search dropdown tags">
+            <select name="tags" id="tags_dropdown" multiple="" class="ui fluid search dropdown tags">
                 <option value="">Select Dietary Tags</option>
-                <option value="V">V</option>
-                <option value="VR">VR</option>
-                <option value="GF">GF</option>
-                <option value="GFR">GFR</option>
+                <option value="v">V</option>
+                <option value="vr">VR</option>
+                <option value="gf">GF</option>
+                <option value="gfr">GFR</option>
                 <option value="contains_nuts">Contains Nuts</option>
                 <option value="contains_gluten">Contains Gluten</option>
             </select>
         </div>
-        <div id="prices">
+        <div id="prices" class="prices">
             
         </div>
         <div class="field">
@@ -71,7 +82,9 @@
               <i class="remove icon"></i>
              cancel
             </div>
-            <button id="submit-button" class="ui button green" type="submit"><i class="checkmark icon"></i>Submit</button>
+            
         </div>
         </div>
     </form>
+    <button id="submit-button" class="ui button green"><i class="checkmark icon"></i>Submit</button>
+    </div>

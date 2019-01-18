@@ -10,6 +10,8 @@ router.get('/', api_item_controller.get_items_all);
 
 router.post('/test', tools_controller.upload_item.single('imagename'), api_item_controller.post_test);
 
+router.post('/test2', tools_controller.upload_category.single('imagename'), api_item_controller.post_test2)
+
 router.post('/create',  auth_controller.ensureToken, tools_controller.upload_item.single('imagename'), api_item_controller.validate_item, api_item_controller.post_item_create)
 
 router.get('/full', api_item_controller.get_items_all_full);

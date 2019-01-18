@@ -1,4 +1,21 @@
-<style>
+<style scoped >
+
+h1,
+h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+
 .scrolling-wrapper {
     overflow-x: scroll;
     overflow-y: hidden;
@@ -11,16 +28,17 @@
 .card {
     margin:5px;
     padding:2px;
-    height: 300px;
+    height: 350px;
     width: 300px;
     border-radius: 3px;
-    background-color:green;
     display: inline-block;
     position:relative;
-    background-image: url('/img/textures/cards2x.png');
+    background-color:white;
+    background-image: url('http://api.thumbr.it/whitenoise-361x370.png?background=f7f3edff&noise=626262&density=45&opacity=11');
     -webkit-box-shadow: 1px 0px 14px -4px rgba(0,0,0,0.85);
     -moz-box-shadow: 1px 0px 14px -4px rgba(0,0,0,0.85);
     box-shadow: 1px 0px 14px -4px rgba(0,0,0,0.85);
+    transition: 0.3s;
     
   }
   
@@ -68,8 +86,9 @@
         <% for (let i = 0; i < items.length; i++){ %>
             <div class="card">
                 <img class="item-img" src=".<%=items[i].image.url%>" width='296px'>
-                <div><%=items[i].name%></div>
-                
+                <div>
+                    <h4><%=items[i].name%></h4>
+                </div>
             </div>
         <% } %>
     </section>
@@ -169,12 +188,12 @@ function menuGalleryController(){
         })
     }
     function createDishController(){
-        let form = document.getElementById('add-item');
+        let form = document.getElementById('create-item-form');
         
     
         form.addEventListener('click', (event) => {
             let target = event.target;
-            console.log(target)
+            
             if (target.closest('#order-type')) {
                 let selected = document.getElementById('order_type_dropdown').parentElement;
                 let ordertypes = selected.querySelectorAll('a');
@@ -192,28 +211,60 @@ function menuGalleryController(){
                 }
             
                 buildIngredInputs(ingredientArray)
+            } else if (target.closest('#item-diet-tags')){
+                let category = document.getElementById('select-category');
+                    category = category.querySelector('.text').innerText;
+                let selected = document.getElementById('tags_dropdown').parentElement;
+                let tags = selected.querySelectorAll('a');
+                let tagArray = Array.prototype.map.call(tags, (tag) => {return tag.getAttribute('data-value')})
+                let priceFields = ''
+                if(category === 'appetizers'){
+                    priceFields = getAppetizerPrices(tagArray);
+                } else if(category === 'salads'){
+                    priceFields = getSaladPrices()
+                }
+                
+                let destination = form.querySelector('.prices');
+                    destination.innerHTML = priceFields;
+                let removeTags = selected.querySelectorAll('.delete');
+                let tagField = document.getElementById('item-diet-tags');
+                tagField.addEventListener('click', (e) => {
+                    if(e.target.matches('.delete')){
+                        let selected = document.getElementById('tags_dropdown').parentElement;
+                        let tags = selected.querySelectorAll('a');
+                        let tagArray = Array.prototype.map.call(tags, (tag) => {return tag.getAttribute('data-value')})
+                        let priceFields = ''
+                            if(category === 'appetizers'){
+                                priceFields = getAppetizerPrices(tagArray);
+                            } else if(category === 'salads'){
+                                priceFields = getSaladPrices()
+                            }
+                        let destination = form.querySelector('.prices');
+                            destination.innerHTML = priceFields;
+                        let removeTags = selected.querySelectorAll('.delete');
+                        let tagField = document.getElementById('item-diet-tags');
+                    }
+                })
+                
             } else if (target.matches('#submit-button')){
-                event.preventDefault()
-                let formFields = form.querySelectorAll('input');
-                let formSelects = form.querySelectorAll('select');
-                let formFields2 = Array.from(formFields);
-                let formSelects2 = Array.from(formSelects);
-                let newItem = {
-
-                }
-                let name = formFields2.find(inputs => inputs.getAttribute('name') == 'name');
-                    newItem.name = name.value;
-                let image = formFields2.find(inputs => inputs.getAttribute('name') == 'imagename');
-                    newItem.imagename = image.files
-                let locations = document.getElementById('select-locations');
-                let selected_locations = locations.querySelector('.selection');
-                let chosen = selected_locations.querySelectorAll('a');
-                let locationIds = [];
-                for (var i = 0; i < chosen.length; i++){
-                    locationIds.push(chosen[i].getAttribute('data-value'))
-                }
-                newItem.locations = locationIds;
-                console.log(newItem)
+                
+                let createItemForm = document.getElementById('create-item-form');
+                let name = createItemForm.querySelector('.name').value;
+                let locations = document.getElementById('select-locations')
+                    .querySelectorAll('a');
+                    locations = Array.from(locations);
+                let ids = locations.map(location => {
+                    return location.dataset.value;
+                })
+                let category = document.getElementById('category_dropdown')
+                    .parentElement.querySelector('.text').innerText;
+                let orderTypes = document.getElementById('order-type')
+                    .querySelectorAll('a');
+                    orderTypes = Array.from(orderTypes);
+                let types = orderTypes.map(type => {
+                    return type.dataset.value;
+                })
+                
             }
         })
         
@@ -423,7 +474,13 @@ function menuGalleryController(){
                 default:
             }
         }
+        
+        function createItem(){
+            
+        }
+        
         sortPrices(req.body.category, tags)
+        
 }
 menuGalleryController()
 </script>
