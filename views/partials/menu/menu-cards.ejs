@@ -205,51 +205,29 @@ function menuGalleryController(){
             } else if (target.closest('#select-ingredients')){ buildIngredInputs(getIngredients())
             } else if (target.closest('#item-diet-tags')){
                 let category = getCategory();
-                let tags = getTags();
-                let priceFields = ''
-                if(category === 'appetizers'){
-                    priceFields = getAppetizerPrices(tags);
-                } else if(category === 'salads'){
-                    priceFields = getSaladPrices(tags);
-                } else if (category === 'hoagies'){
-                    priceFields = getHoagiePrices(tags);
-                } else if (category === 'pizza'){
-                    priceFields = getPizzaPrices(tags);
-                } else if (category === 'pasta'){
-                    priceFields = getPastaPrices(tags);
-                } else if (category === 'desserts'){
-                    priceFields = getDessertPrices(tags, name);
-                }
+                let tags = getTags('tags_dropdown');
                 
                 let destination = form.querySelector('.prices');
-                    destination.innerHTML = priceFields;
-                let removeTags = document.getElementById('tags_dropdown')
-                    .querySelectorAll('.delete');
-                let tagField = document.getElementById('item-diet-tags');
-                tagField.addEventListener('click', (e) => {
-                    if(e.target.matches('.delete')){
-                        
-                        let priceFields = ''
-                            if(category === 'appetizers'){
-                                priceFields = getAppetizerPrices(getTags());
-                            } else if(category === 'salads'){
-                                priceFields = getSaladPrices()
-                            } else if(category === 'haogies'){
-                                priceFields = getHoagiePrices(getTags(), getOrderTypes())
-                            }
-                        let destination = form.querySelector('.prices');
-                            destination.innerHTML = priceFields;
-                        let removeTags = selected.querySelectorAll('.delete');
-                        let tagField = document.getElementById('item-diet-tags');
-                    }
-                })
+                    destination.innerHTML = switchCategories(
+                        getCategory(), tags, name
+                    );
+               
+            } else if (target.matches('.delete')){ 
+            
+                let category = getCategory();
+                let tags = getTags('tags_dropdown');
                 
-            } else if (target.matches('#submit-button')){
+                let destination = form.querySelector('.prices');
+                    destination.innerHTML = switchCategories(
+                        getCategory(), tags, name
+                    );
+                
+            }  else if (target.matches('#submit-button')){
                 let createItemForm = document.getElementById('create-item-form');
                 const newItem = {
                     name: createItemForm.querySelector('input[name=price]').value,
                     category: getCategory(),
-                    tags: getTags(),
+                    tags: getTags('tags_dropdown'),
                     order_types: getOrderTypes()
                     
                 }
@@ -276,7 +254,8 @@ function menuGalleryController(){
                 //Get order Type Descriptions
             
                 let prices = getPricing(createItemForm, 'input[name=price]');
-            }   
+            }
+        
         })
         
     }
