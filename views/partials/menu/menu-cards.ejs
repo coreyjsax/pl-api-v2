@@ -16,6 +16,10 @@ a {
   color: #42b983;
 }
 
+.prices.sub-head{
+    text-align:center;
+}
+
 .scrolling-wrapper {
     overflow-x: scroll;
     overflow-y: hidden;
@@ -193,51 +197,45 @@ function menuGalleryController(){
     
         form.addEventListener('click', (event) => {
             let target = event.target;
+            let name = form.querySelector('input[name=name]').value;
             
-            if (target.closest('#order-type')) {
-                let selected = document.getElementById('order_type_dropdown').parentElement;
-                let ordertypes = selected.querySelectorAll('a');
-                let tmp = [];
-                for (let i = 0; i < ordertypes.length; i++){
-                    tmp.push(ordertypes[i].getAttribute('data-value'));
-                }
-                buildDescInputs(tmp)
-            } else if (target.closest('#select-ingredients')){
-                let selected = document.getElementById('ingredients_dropdown').parentElement;
-                let ingredients = selected.querySelectorAll('a');
-                let ingredientArray = [];
-                for (let i = ingredients.length; i--;){
-                    ingredientArray.push({name: ingredients[i].innerText, id: ingredients[i].getAttribute('data-value')})
-                }
-            
-                buildIngredInputs(ingredientArray)
+            if (target.closest('#order-type')) { 
+                let destination = document.getElementById('order-type-descriptions')
+                destination.innerHTML = getDescriptions(getOrderTypes());
+            } else if (target.closest('#select-ingredients')){ buildIngredInputs(getIngredients())
             } else if (target.closest('#item-diet-tags')){
-                let category = document.getElementById('select-category');
-                    category = category.querySelector('.text').innerText;
-                let selected = document.getElementById('tags_dropdown').parentElement;
-                let tags = selected.querySelectorAll('a');
-                let tagArray = Array.prototype.map.call(tags, (tag) => {return tag.getAttribute('data-value')})
+                let category = getCategory();
+                let tags = getTags();
                 let priceFields = ''
                 if(category === 'appetizers'){
-                    priceFields = getAppetizerPrices(tagArray);
+                    priceFields = getAppetizerPrices(tags);
                 } else if(category === 'salads'){
-                    priceFields = getSaladPrices()
+                    priceFields = getSaladPrices(tags);
+                } else if (category === 'hoagies'){
+                    priceFields = getHoagiePrices(tags);
+                } else if (category === 'pizza'){
+                    priceFields = getPizzaPrices(tags);
+                } else if (category === 'pasta'){
+                    priceFields = getPastaPrices(tags);
+                } else if (category === 'desserts'){
+                    priceFields = getDessertPrices(tags, name);
                 }
                 
                 let destination = form.querySelector('.prices');
                     destination.innerHTML = priceFields;
-                let removeTags = selected.querySelectorAll('.delete');
+                let removeTags = document.getElementById('tags_dropdown')
+                    .querySelectorAll('.delete');
                 let tagField = document.getElementById('item-diet-tags');
                 tagField.addEventListener('click', (e) => {
                     if(e.target.matches('.delete')){
-                        let selected = document.getElementById('tags_dropdown').parentElement;
-                        let tags = selected.querySelectorAll('a');
-                        let tagArray = Array.prototype.map.call(tags, (tag) => {return tag.getAttribute('data-value')})
+                        
                         let priceFields = ''
                             if(category === 'appetizers'){
-                                priceFields = getAppetizerPrices(tagArray);
+                                priceFields = getAppetizerPrices(getTags());
                             } else if(category === 'salads'){
                                 priceFields = getSaladPrices()
+                            } else if(category === 'haogies'){
+                                priceFields = getHoagiePrices(getTags(), getOrderTypes())
                             }
                         let destination = form.querySelector('.prices');
                             destination.innerHTML = priceFields;
@@ -247,25 +245,38 @@ function menuGalleryController(){
                 })
                 
             } else if (target.matches('#submit-button')){
-                
                 let createItemForm = document.getElementById('create-item-form');
+                const newItem = {
+                    name: createItemForm.querySelector('input[name=price]').value,
+                    category: getCategory(),
+                    tags: getTags(),
+                    order_types: getOrderTypes()
+                    
+                }
+                
+               
                 let name = createItemForm.querySelector('.name').value;
+                //get array of location ids
                 let locations = document.getElementById('select-locations')
                     .querySelectorAll('a');
                     locations = Array.from(locations);
                 let ids = locations.map(location => {
                     return location.dataset.value;
                 })
+                //Get category selection value
                 let category = document.getElementById('category_dropdown')
                     .parentElement.querySelector('.text').innerText;
+                //Get Order Types
                 let orderTypes = document.getElementById('order-type')
                     .querySelectorAll('a');
                     orderTypes = Array.from(orderTypes);
                 let types = orderTypes.map(type => {
                     return type.dataset.value;
-                })
-                
-            }
+                });
+                //Get order Type Descriptions
+            
+                let prices = getPricing(createItemForm, 'input[name=price]');
+            }   
         })
         
     }

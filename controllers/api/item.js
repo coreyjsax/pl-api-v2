@@ -152,12 +152,12 @@ exports.delete_item = (req, res) => {
                 if (err){
                     console.log(err);
                 }
-                console.log('file has been deleted')
-            })
-             res.status(200).send({status: 200, message: 'Item deleted', data: item})
+                console.log('file has been deleted');
+            });
+             res.status(200).send({status: 200, message: 'Item deleted', data: item});
         }
-    })
-}
+    });
+};
 
 
 exports.get_items_all = (req, res) => {
