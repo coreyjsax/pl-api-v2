@@ -29,6 +29,10 @@ exports.tools = {
     }
 }
 
+exports.isAlphaNum = string => {
+    return string.match(/^[a-z0-9]+$/i) !== null;
+}
+
 //Menu Item Image Upload
 exports.Storage_Item = multer.diskStorage({
     destination: function(req, file, callback, err){

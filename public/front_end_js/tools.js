@@ -21,10 +21,12 @@ function getModal(params){
 }
 
 
+
+
     
 //Items Price Fields
 
-const getAppetizerPrices = (dietArray) => {
+const getAppetizerPrices = dietArray => {
   let priceSubHead = `<h4 class="prices sub-head">Item Pricing</h4>`
   let d = dietArray;
   let prices = `
@@ -235,20 +237,7 @@ const getCategory = () => {
       return category;
 }
 
-//Get Ingredients
-const getIngredients = () => {
-  let ingredients = document.getElementById('ingredients_dropdown').parentElement;
-      ingredients = ingredients.querySelectorAll('a');
-      ingredients = Array.from(ingredients);
-      ingredients = ingredients.map(item => {
-        let ingredient = {
-          name: item.innerText,
-          id: item.getAttribute('data-value')
-        }
-        return ingredient;
-      })
-      return ingredients;
-}
+
 
 //add, remove Tags
 const getTags = (el) => {
@@ -259,6 +248,31 @@ const getTags = (el) => {
         return tag.getAttribute('data-value');
       })
     return tags;
+}
+
+const getIngredientList = (el) => {
+  let ing = document.getElementById(el).parentElement;
+      ing = ing.querySelectorAll('a');
+      ing = Array.from(ing);
+      ing = ing.map(ingredient => {
+        let item = {
+          id: ingredient.getAttribute('data-value'),
+          name: ingredient.innerText
+        }
+        return item;
+      })
+      return ing;
+}
+
+//get locations
+const getLocations = (el) => {
+  let locs = document.getElementById(el).parentElement;
+      locs = locs.querySelectorAll('a');
+      locs = Array.from(locs);
+      locs = locs.map(loc => {
+        return loc.dataset.value;
+      })
+    return locs;
 }
 
 //category switcher
@@ -291,5 +305,80 @@ const getPricing = (form, input) => {
         return item;
       })
       return prices;
+}
+
+//Get Descriptions from form
+const getDesc = (form, input) => {
+  let desc = form.querySelectorAll(input);
+      desc = Array.from(desc);
+      desc = desc.map(d => {
+        let description = {
+          type: d.getAttribute('data-type'),
+          text: d.value
+        }
+        return description;
+      })
+      return desc;
+}
+
+//Get Ingredients
+const getIngredients = (form, input) => {
+  let ingredients = form.querySelectorAll(input);
+      ingredients = Array.from(ingredients);
+      ingredients = ingredients.map(item => {
+        let ingredient = {
+          name: item.getAttribute('data-name'),
+          id: item.getAttribute('data-id')
+        }
+        return ingredient;
+      })
+      return ingredients;
+}
+
+const populateIngred = (form, input) => {
+  let ing = form.querySelectorAll(input);
+      ing = Array.from(ing);
+      ing = ing.map(item => {
+        let ingredient = {
+          id: item.getAttribute('data-id'),
+          name: item.getAttribute('data-name'),
+          amount: item.value
+        }
+        return ingredient;
+      })
+      return ing;
+}
+
+//POST Item Request
+const postItem = (newItem) => {
+  const fileInput = newItem.image;
+  const file = fileInput.files[0]
+  const body = new FormData
+        body.append("name", newItem.name)
+        body.append("tags",  newItem.tags)
+        body.append("description", JSON.stringify(newItem.description))
+        body.append("ingredients", JSON.stringify(newItem.ingredients))
+        body.append("order_types", newItem.order_types)
+        body.append("locations", newItem.locations)
+        body.append("category", newItem.category)
+        body.append("prices", JSON.stringify(newItem.prices))
+        body.append("notes", newItem.notes)
+        body.append("imagename", file)
+    console.log(body)
+  return fetch("https://pl-api-v2-coreyjsax.c9users.io/items/create", {
+      body,
+      headers: {
+        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTQ3NTI4MTI5fQ.j9L92m-CAFM8GXDnN-voN_OzlVjkqMvxpE4ByZ0yCsE",
+      },
+      method: "POST"
+    }).then((res) => {
+      let data = res.json();
+      return data;
+    }).then((data) => {
+      console.log(data)
+    }).catch((error)=>{
+      return error
+    })
+        
 }
 

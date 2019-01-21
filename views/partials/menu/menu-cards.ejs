@@ -198,11 +198,12 @@ function menuGalleryController(){
         form.addEventListener('click', (event) => {
             let target = event.target;
             let name = form.querySelector('input[name=name]').value;
+            let notes = form.querySelector('textarea[name=notes]').value;
             
             if (target.closest('#order-type')) { 
                 let destination = document.getElementById('order-type-descriptions')
                 destination.innerHTML = getDescriptions(getOrderTypes());
-            } else if (target.closest('#select-ingredients')){ buildIngredInputs(getIngredients())
+            } else if (target.closest('#select-ingredients')){ buildIngredInputs(getIngredientList('ingredients_dropdown'))
             } else if (target.closest('#item-diet-tags')){
                 let category = getCategory();
                 let tags = getTags('tags_dropdown');
@@ -225,22 +226,28 @@ function menuGalleryController(){
             }  else if (target.matches('#submit-button')){
                 let createItemForm = document.getElementById('create-item-form');
                 const newItem = {
-                    name: createItemForm.querySelector('input[name=price]').value,
+                    name: createItemForm.querySelector('input[name=name]').value,
                     category: getCategory(),
+                    image: document.getElementById('file-input'),
+                    ingredients: {
+                       list:  getTags('ingredients_dropdown'),
+                       recipe:  populateIngred(createItemForm, 'input[name=ingred_full]')
+                    },
                     tags: getTags('tags_dropdown'),
-                    order_types: getOrderTypes()
+                    locations: getTags('location_dropdown'),
+                    order_types: getOrderTypes(),
+                    prices: getPricing(createItemForm, 'input[name=price]'),
+                    description: getDesc(createItemForm, 'textarea[name=desc]'),
+                    notes: notes
                     
                 }
                 
-               
-                let name = createItemForm.querySelector('.name').value;
-                //get array of location ids
-                let locations = document.getElementById('select-locations')
-                    .querySelectorAll('a');
-                    locations = Array.from(locations);
-                let ids = locations.map(location => {
-                    return location.dataset.value;
-                })
+                console.log(newItem)
+                
+                return postItem(newItem)
+                
+                let ingredientList = getIngredientList('ingredients_dropdown')
+                
                 //Get category selection value
                 let category = document.getElementById('category_dropdown')
                     .parentElement.querySelector('.text').innerText;
@@ -263,11 +270,9 @@ function menuGalleryController(){
         let destination = document.getElementById('order-type-descriptions');
         let html = `
             ${ordertypes.map(ordertype => 
-              ` <input name="ot_name" type="hidden" readonly="" value="${ordertype}">
-                <div class="field">
+              ` <div class="field">
                     <label>${ordertype} description</label>
-                   
-                    <textarea name="ot_desc" type="text" rows="3"></textarea>
+                    <textarea name="desc" type="text" rows="3" data-type="${ordertype}"></textarea>
                 </div>`
             ).join('')}
         `;
@@ -283,15 +288,10 @@ function menuGalleryController(){
             
             `
                     <div class="fields">
-                        <input class="ingredient-data" name="ingred_id" type="hidden" readonly="" value="${ingredient.id}">
-                    <div class="eight wide field">
-                        <label>${ingredient.name} qty by oz</label>
-                        <input class="ingredient-data" name="ingred_qty" type="text">
-                    </div>
-                    <div class="eight wide field">
-                        <label>${ingredient.name} price per oz</label>
-                        <input class="ingredient-data" name="ingred_price" type="text">
-                    </div>
+                        <div class="eight wide field">
+                            <label>${ingredient.name} qty by oz</label>
+                            <input class="ingredient-data" name="ingred_full" type="text" data-id="${ingredient.id}" data-name="${ingredient.name}">
+                        </div>
                     </div>
             `
             ).join('')}

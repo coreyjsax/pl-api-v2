@@ -11,7 +11,10 @@ var ItemSchema = new mongoose.Schema({
     description: [],
     prices: [],
     tags: [],
-    ingredients: [{type: mongoose.Schema.Types.ObjectId, ref: 'Ingredient'}],
+    ingredients: {
+       list: [{type: mongoose.Schema.Types.ObjectId, ref: 'Ingredient'}],
+       recipe: []
+    },
     notes: String,
     image: {
         image_name: String, 

@@ -53,43 +53,48 @@ exports.post_test = (req, res) => {
     }) 
 }
 
-
 //Post Item
-
-
 
 exports.post_item_create = (req, res, next) => {
     
     
-    let ingredients = req.body.ingredients;
-        ingredients = ingredients.split(',')
     let locations = req.body.locations;
         locations = locations.split(',');
+    
     let tags = req.body.tags;
         tags = tags.split(",");
+    
     let order_types = req.body.order_types;
         order_types = order_types.split(",");
     
-   // preserve newlines, etc - use valid JSON
-    let description = JSON.parse(req.body.description)
+    let ingredients = JSON.parse(req.body.ingredients)
+    
+    let recipe = ingredients.recipe
+        recipe = recipe.map(ingredient => ({id: ingredient.id, name: ingredient.name, amount: parseFloat(ingredient.amount)}))
+   
     let prices = JSON.parse(req.body.prices);
-    prices = prices.map(price => ({type: price.type, text:price.text, amount: parseFloat(price.amount)}))
+        prices = prices.map(price => ({type: price.type, text:price.text, amount: parseFloat(price.amount)}))
+    
+    let descriptions = JSON.parse(req.body.description);
     
     const item = {
         name: req.body.name,
-        description: description,
         category: req.body.category,
         locations: locations,
         order_types: order_types,
         tags: tags,
-        ingredients: ingredients,
+        ingredients: {
+            list: ingredients.list,
+            recipe: recipe
+        },
         notes: req.body.notes,
-        prices: prices
+        prices: prices,
+        description: descriptions,
     };
     
-
+    
     if (req.fileValidationError){
-        res.status(415).send({
+        res.status(415).json({
             status: 415,
             message: req.fileValidationError
         })
@@ -106,7 +111,7 @@ exports.post_item_create = (req, res, next) => {
         },
         Item.create(item, (err, newlyCreated) => {
             if (err) {
-                res.status(500).send(err)
+                res.status(500).json(err)
             } else {
                 res.status(201).json({status: 201, data: newlyCreated});
             }
@@ -114,9 +119,6 @@ exports.post_item_create = (req, res, next) => {
     }
 }
      
- 
-
-
 //Item Mongoose Map Post Test
 exports.post_test_map = (req, res) => {
     const item = {
@@ -180,14 +182,11 @@ exports.get_items_all = (req, res) => {
 
 exports.get_items_all_full = (req, res) => {
     Item.find().
-    populate('ingredients', 'name id updated type tags').
+    populate('ingredients.list').
     populate('locations', 'nickname name id').
     exec((err, results) => {
-        if (err) {
-            console.log(err)
-        } else {
+        if (err) console.log(err)
             res.json(results)
-        }
     });
 }
 
@@ -340,20 +339,34 @@ exports.validate_item = (req, res, next) => {
     req.checkBody('ingredients')
         .notEmpty().withMessage('at least one ingredient is required')
         .custom(val => {
-            let array = val.split(',');
+            let ingredients = JSON.parse(val);
+            let list = ingredients.list;
+            let recipe = ingredients.recipe;
+            let results = list.map(loc => loc.match(/^[a-z0-9]+$/i) !== null);
             let counter = '';
-            array.filter((item) => {
-                if (item.length !== 24){counter = false}
-            });
-            let status = (counter) => {
-                if (counter === false){
-                    return false;
-                } else {
-                    return true;
+            
+            if(list.length < 1 || recipe.length < 1){
+                counter = false;
+                return counter;
+            } else if (results.includes(false)){
+                counter = false;
+                return counter;
+            } else {
+                let idMatches = recipe.map(loc => list.includes(loc.id) && typeof loc.name === "string" && loc.amount.match(/^-?\d+\.?\d*$/) !== null)
+                console.log(idMatches)
+                if (idMatches.includes(false)){
+                    counter = false;
+                    return counter;
                 }
+            }
+            
+            let status = counter => {
+                if (counter === false) return false;
+                 else return true
             };
             return status(counter);
-        }).withMessage('malformed params: ingredient ids must be 24 alphanumeric chars');
+             
+        }).withMessage('invalid params: ingredients list array and ingredient recipe array required. List must alpha numeric and 24 char.')
     req.checkBody('locations')
         .notEmpty().withMessage('at least one location is required')
         .custom(val => {
@@ -398,6 +411,44 @@ exports.validate_item = (req, res, next) => {
             req.checkBody('prices')
             .notEmpty().withMessage('missing params: salad prices objects required')
             .custom(val => {
+                
+                /* 
+                
+                let ingredients = JSON.parse(val);
+            let list = ingredients.list;
+            let recipe = ingredients.recipe;
+            let results = list.map(loc => loc.match(/^[a-z0-9]+$/i) !== null);
+            let counter = '';
+            
+            if(list.length < 1 || recipe.length < 1){
+                counter = false;
+                return counter;
+            } else if (results.includes(false)){
+                counter = false;
+                return counter;
+            } else {
+                let idMatches = recipe.map(loc => list.includes(loc.id) && typeof loc.name === "string" && loc.amount.match(/^-?\d+\.?\d*$/) !== null)
+                console.log(idMatches)
+                if (idMatches.includes(false)){
+                    counter = false;
+                    return counter;
+                }
+            }
+            
+            let status = counter => {
+                if (counter === false) return false;
+                 else return true
+            };
+            return status(counter);
+                
+                
+                */
+                
+                
+                
+        
+                
+                
                 let counter = '';
                 let p = JSON.parse(val);
                 let typeParams = ['sm', 'lg', 'party'];
@@ -408,7 +459,7 @@ exports.validate_item = (req, res, next) => {
                     let typeValue = typeParams.indexOf(p[i].type),
                         textValue = textParams.indexOf(p[i].text);
                         
-                    if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                    if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) !== null){
                         counter = false;
                         return counter;
                     } else if (typeValue !== textValue) {
@@ -497,7 +548,6 @@ exports.validate_item = (req, res, next) => {
                             counter = false;
                             return false;
                         }
-                        
                     }
                 
                 let status = (counter) => {
@@ -708,9 +758,9 @@ exports.validate_item = (req, res, next) => {
                     }
                     return status(counter);
                 }).withMessage('malformed params: price params do not match appetizer category')
-        } 
+        }
     
-        req.checkBody('description')
+      /*  req.checkBody('description')
             .notEmpty().withMessage('missing params: description objects required')
             .custom(val => {
                 let counter = '';
@@ -741,7 +791,7 @@ exports.validate_item = (req, res, next) => {
                     return status(counter); 
                     
             }).withMessage('malformed params: description params do not match ordertypes')
-        
+        */
         
     req.asyncValidationErrors().then(function(){
         next()
@@ -750,6 +800,6 @@ exports.validate_item = (req, res, next) => {
             status: 400,
             errors: errors
         }
-        res.status(400).send(msg);
+        res.status(400).json(msg);
     })
 }
