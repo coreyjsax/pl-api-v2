@@ -237,6 +237,8 @@ exports.location_create_post = (req, res) => {
     };
 };
 
+
+
 //Untappd 
 exports.untappd_get_locations = (req, res) => {
     return untappd.getUntappdLocations()
@@ -244,4 +246,95 @@ exports.untappd_get_locations = (req, res) => {
         res.json(data);
     });
 };
+
+//Untappd Create Menu
+exports.create_untappd_menu = (req, res) => {
+    Location.findById(req.params.location_id, (err, doc) => {
+        if (err) {
+            if (!doc){
+                res.status(404).json({status: 404, msg: 'location not found'})
+            } else {
+                res.status(500).send(server_error);
+            }
+        } else {
+            if (doc.length === 0){
+                res.status(404).json({status: 404, msg: 'location not found'})
+            } else {
+                let new_menu = {
+                    name: req.body.menu.name
+                }
+                return untappd.post_new_menu(doc.meta_data.untappd_id, new_menu)
+                .then((data) => {
+                    res.json(data);
+                })
+            }
+        }
+    })
+    
+    
+}
+
+//Untappd Edit Menu
+exports.edit_untappd_menu = (req, res) => {
+    Location.findById(req.params.location_id, (err, doc) => {
+        if (err) {
+            if (!doc){
+                res.status(404).json({status: 404, msg: 'location not found'})
+            } else {
+                res.status(500).send(server_error);
+            }
+        } else {
+            if (doc.length === 0){
+                res.status(404).json({status: 404, msg: 'location not found'})
+            } else {
+                const untappd_id = doc.meta_data.untappd_id;
+                let data = req.body;
+                let menu_id = req.params.menu_id;
+                
+                return untappd.edit_untappd_menu(untappd_id, menu_id, req.body)
+                .then((data) => {
+                    res.json(data);
+                })
+            }
+        }
+    })
+}
+
+//Untappd Post Menu Section
+exports.create_untappd_menu_section = (req, res) => {
+    return untappd.post_new_untappd_section(req.params.menu_id, req.body)
+    .then((data) => {
+        res.json(data)
+    }).catch((err)=> {
+        res.json(err)
+    })
+}
+
+//Untappd Search for an Item
+exports.search_untappd_item = (req, res) => {
+    return untappd.get_search_untappd_item(req.params.string)
+    .then((data) => {
+        res.json(data)
+    }).catch((err) => {
+        res.json(err)
+    })
+}
+
+
+//Untappd Post Menu Item
+exports.create_untappd_menu_item = (req, res) => {
+    return untappd.post_untappd_item(req.params.section_id, req.body)
+    .then((data) => {
+        res.json(data)
+    }).catch((err) => {
+        res.json(err);
+    })
+}
+
+
+
+
+
+//Delete and Untappd Menu
+
 

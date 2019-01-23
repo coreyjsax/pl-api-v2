@@ -10,6 +10,10 @@ const tokenR = process.env.untappdReadToken,
 const headers = {
     'Authorization' : authR
 };
+const headers_w = {
+    'Authorization' : authW
+};
+console.log(authW)
 
 exports.getUntappdLocations = () => {
     return request({
@@ -128,6 +132,83 @@ exports.getAllCustomMenusByLocation = (locationId) => {
     });
 }
 
-exports.post_new_menu = (locationId) => {
-   
+//Post a new menu object to Untappd
+
+exports.post_new_menu = (locId, data) => {
+   return request({
+       url: `${baseUrl}locations/${locId}/menus`,
+       body: data,
+       headers: headers_w,
+       json: true,
+       method: "POST"
+   }).then((res) => {
+       return res
+   }).catch((err) => {
+       return err;
+   })
+}
+
+//Edit an Untappd Menu
+
+exports.edit_untappd_menu = (untappd_id, menu_id, menu) => {
+    console.log(untappd_id)
+    console.log(menu_id)
+    console.log(menu)
+    
+    return request({
+       url: `${baseUrl}/menus/${menu_id}`,
+       body: menu,
+       headers: headers_w,
+       json: true,
+       method: "PUT"
+   }).then((res) => {
+       return res
+   }).catch((err) => {
+       return err;
+   })
+}
+
+//Add sections to Untappd Menu
+
+exports.post_new_untappd_section = (menu_id, section) => {
+    return request({
+        url: `${baseUrl}/menus/${menu_id}/sections`,
+        body: section,
+        headers: headers_w,
+        json: true,
+        method: "POST"
+    }).then((res) => {
+        return res
+    }).catch((err) => {
+        return err;
+    })
+}
+
+//Untappd Search for an Item
+
+exports.get_search_untappd_item = (query) => {
+    return request({
+        url: `${baseUrl}/items/search/?${query}`,
+        headers: headers,
+    }).then((res) => {
+        let data = JSON.parse(res);
+        return data;
+    }).catch((err) => {
+        return err;
+    })
+}
+
+
+//Untapppd Add and Item
+exports.post_untappd_item = (section_id, body) => {
+    return request({
+        url: `${baseUrl}/sections/${section_id}/items`,
+        headers: headers_w,
+        json: true,
+        method: 'POST'
+    }).then((res) => {
+        return res
+    }).catch((err) => {
+        return err
+    })
 }

@@ -192,7 +192,7 @@ exports.get_items_all_full = (req, res) => {
 
 exports.get_items_by_search = (req, res) => {
     Item.find().
-    populate('ingredients').
+    populate('ingredients.list').
     populate('locations').
     exec((err, results) => {
         if (err) {
@@ -200,8 +200,8 @@ exports.get_items_by_search = (req, res) => {
         } else {
                 let filtered = [];
                 for (var i = 0; i < results.length; i++){
-                    for (var j = 0; j < results[i].ingredients.length; j++){
-                        if (results[i].ingredients[j].name == req.params.name){
+                    for (var j = 0; j < results[i].ingredients.list.length; j++){
+                        if (results[i].ingredients.list[j].name == req.params.name){
                             filtered.push(results[i]);
                         }
                     }
@@ -353,7 +353,6 @@ exports.validate_item = (req, res, next) => {
                 return counter;
             } else {
                 let idMatches = recipe.map(loc => list.includes(loc.id) && typeof loc.name === "string" && loc.amount.match(/^-?\d+\.?\d*$/) !== null)
-                console.log(idMatches)
                 if (idMatches.includes(false)){
                     counter = false;
                     return counter;
@@ -412,43 +411,6 @@ exports.validate_item = (req, res, next) => {
             .notEmpty().withMessage('missing params: salad prices objects required')
             .custom(val => {
                 
-                /* 
-                
-                let ingredients = JSON.parse(val);
-            let list = ingredients.list;
-            let recipe = ingredients.recipe;
-            let results = list.map(loc => loc.match(/^[a-z0-9]+$/i) !== null);
-            let counter = '';
-            
-            if(list.length < 1 || recipe.length < 1){
-                counter = false;
-                return counter;
-            } else if (results.includes(false)){
-                counter = false;
-                return counter;
-            } else {
-                let idMatches = recipe.map(loc => list.includes(loc.id) && typeof loc.name === "string" && loc.amount.match(/^-?\d+\.?\d*$/) !== null)
-                console.log(idMatches)
-                if (idMatches.includes(false)){
-                    counter = false;
-                    return counter;
-                }
-            }
-            
-            let status = counter => {
-                if (counter === false) return false;
-                 else return true
-            };
-            return status(counter);
-                
-                
-                */
-                
-                
-                
-        
-                
-                
                 let counter = '';
                 let p = JSON.parse(val);
                 let typeParams = ['sm', 'lg', 'party'];
@@ -459,7 +421,7 @@ exports.validate_item = (req, res, next) => {
                     let typeValue = typeParams.indexOf(p[i].type),
                         textValue = textParams.indexOf(p[i].text);
                         
-                    if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) !== null){
+                    if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) == null){
                         counter = false;
                         return counter;
                     } else if (typeValue !== textValue) {
@@ -492,7 +454,7 @@ exports.validate_item = (req, res, next) => {
                     let typeValue = typeParams.indexOf(p[i].type),
                         textValue = textParams.indexOf(p[i].text);
                         
-                    if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                    if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) == null){
                         counter = false;
                         return counter;
                     } else if (typeValue !== textValue) {
@@ -518,7 +480,7 @@ exports.validate_item = (req, res, next) => {
                 let counter = '';
                 let p = JSON.parse(val);
                 let typeParams = ['reg', 'vr'];
-                let textParams = ['regular','get_it_vegan'];
+                let textParams = ['regular','vegan'];
                 let tagValue = typeParams.indexOf('vr');
                 let tags = req.body.tags.split(',');
                 
@@ -535,7 +497,7 @@ exports.validate_item = (req, res, next) => {
                         console.log('no vr')
                         if (p.length === 1){
                             if (p[0].type && p[0].text && p[0].amount){
-                                if (p[0].type !== "reg" || p[0].text !== "regular" || p[0].amount === null) {
+                                if (p[0].type !== "reg" || p[0].text !== "regular" || p[0].amount === null || p[0].amount.match(/^-?\d+\.?\d*$/) == null) {
                                     
                                     counter = false;
                                     return false;
@@ -575,7 +537,7 @@ exports.validate_item = (req, res, next) => {
                                 let typeValue = typeParams.indexOf(p[i].type),
                                     textValue = textParams.indexOf(p[i].text);
                                 
-                                if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                                if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) == null){
                                     counter = false;
                                     return counter;
                                 } else if (typeValue !== textValue) {
@@ -594,7 +556,7 @@ exports.validate_item = (req, res, next) => {
                                 let typeValue = typeParams.indexOf(p[i].type),
                                     textValue = textParams.indexOf(p[i].text);
                                 
-                                if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                                if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) == null){
                                     counter = false;
                                     return counter;
                                 } else if (typeValue !== textValue) {
@@ -632,7 +594,7 @@ exports.validate_item = (req, res, next) => {
                             let typeValue = typeParams.indexOf(p[i].type),
                                 textValue = textParams.indexOf(p[i].text);
                                 
-                                if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                                if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) == null){
                                     counter = false;
                                     return counter;
                                 } else if (typeValue !== textValue){
@@ -648,7 +610,7 @@ exports.validate_item = (req, res, next) => {
                             let typeValue = typeParams.indexOf(p[i].type),
                                 textValue = textParams.indexOf(p[i].text);
                                 
-                                if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                                if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) == null){
                                     counter = false;
                                     return counter;
                                 } else if (typeValue !== textValue){
@@ -657,7 +619,7 @@ exports.validate_item = (req, res, next) => {
                                 }
                         }
                     } else {
-                        if (p.length !== 1 || p.type !== 'reg' || p.text != 'regular' || !p.amount || p.amount == null){
+                        if (p.length !== 1 || p.type !== 'reg' || p.text != 'regular' || !p.amount || p.amount == null || p.amount.match(/^-?\d+\.?\d*$/) == null){
                             counter = false;
                             return counter;
                         }
@@ -687,7 +649,7 @@ exports.validate_item = (req, res, next) => {
                             let typeValue = typeParams.indexOf(p[i].type),
                                 textValue = textParams.indexOf(p[i].text);
                             
-                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null){
+                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) == null){
                                     counter = false;
                                     return counter;
                             } else if (typeValue !== textValue) {
@@ -703,7 +665,7 @@ exports.validate_item = (req, res, next) => {
                             let typeValue = updatedType.indexOf(p[i].type),
                                 textValue = updatedText.indexOf(p[i].text);
                                 
-                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p.length < updatedType.length){
+                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) == null || p.length < updatedType.length){
                                     counter = false;
                                     return counter;
                             } else if (typeValue !== textValue) {
@@ -720,7 +682,7 @@ exports.validate_item = (req, res, next) => {
                             let typeValue = updatedType.indexOf(p[i].type),
                                 textValue = updatedText.indexOf(p[i].text);
                                 
-                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p.length < updatedType.length){
+                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) == null || p.length < updatedType.length){
                                     counter = false;
                                     return counter;
                             } else if (typeValue !== textValue) {
@@ -737,7 +699,7 @@ exports.validate_item = (req, res, next) => {
                             let typeValue = updatedType.indexOf(p[i].type),
                                 textValue = updatedText.indexOf(p[i].text);
                                 
-                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p.length < updatedType.length){
+                            if (typeValue === -1 || textValue === -1 || !p[i].amount || p[i].amount === null || p[i].amount.match(/^-?\d+\.?\d*$/) == null || p.length < updatedType.length){
                                     counter = false;
                                     return counter;
                             } else if (typeValue !== textValue) {
@@ -758,41 +720,31 @@ exports.validate_item = (req, res, next) => {
                     }
                     return status(counter);
                 }).withMessage('malformed params: price params do not match appetizer category')
+                
+                
         }
     
-      /*  req.checkBody('description')
-            .notEmpty().withMessage('missing params: description objects required')
-            .custom(val => {
-                let counter = '';
-                let d = JSON.parse(val)
-                let ordertypes = req.body.order_types;
-                    ordertypes = ordertypes.split(',');
-                
-                if (d.length !== ordertypes.length){
-                    counter = false;
-                    return counter;
-                }   
-                
-                for (let i = 0; i < d.length; i++){
-                    let typeValue = ordertypes.indexOf(d[i].type)
-                    if (typeValue === -1 || !d[i].text || d[i].text === null) {
-                        counter = false;
-                        return counter;
-                    }
-                }
-                
-               let status = (counter) => {
-                        if (counter === false){
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    }
-                    return status(counter); 
-                    
-            }).withMessage('malformed params: description params do not match ordertypes')
-        */
-        
+    req.checkBody('description')
+    .notEmpty().withMessage('missing params: description objects required')
+    .custom(val => {
+            let desc = JSON.parse(val);
+            let orderTypes = req.body.order_types.split(',');
+            let counter = '';
+            
+            let matches = desc.map(d => orderTypes.includes(d.type) && typeof d.type === "string" && typeof d.text === "string" && d.text !== '' && d.text.match(/^[a-zA-Z0-9 "!?.-]+$/)) 
+            if (matches.includes(false)){
+                counter = false;
+                return counter;
+            }
+ 
+            let status = counter => {
+                if (counter === false) return false;
+                 else return true
+            };
+            return status(counter); 
+             
+    }).withMessage('malformed params: description params do not match ordertypes')
+     
     req.asyncValidationErrors().then(function(){
         next()
     }).catch(function(errors){

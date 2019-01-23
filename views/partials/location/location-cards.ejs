@@ -1,0 +1,247 @@
+<style scoped>
+    h1,
+h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+
+.prices.sub-head{
+    text-align:center;
+}
+
+.scrolling-wrapper {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+.scrolling-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+.card {
+    margin:5px;
+    padding:2px;
+    height: 350px;
+    width: 300px;
+    border-radius: 3px;
+    display: inline-block;
+    position:relative;
+    background-color:white;
+    background-image: url('http://api.thumbr.it/whitenoise-361x370.png?background=f7f3edff&noise=626262&density=45&opacity=11');
+    -webkit-box-shadow: 1px 0px 14px -4px rgba(0,0,0,0.85);
+    -moz-box-shadow: 1px 0px 14px -4px rgba(0,0,0,0.85);
+    box-shadow: 1px 0px 14px -4px rgba(0,0,0,0.85);
+    transition: 0.3s;
+    
+  }
+  
+  .card:first-child {
+      margin-left:15px;
+  }
+  .item-img {
+      border-radius: 3px 3px 0px 0px;
+  }
+  
+   .sidenav {
+  height: 359px; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+   position:absolute;/* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 43px; /* Stay at the top */
+  left: 0;
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.3s; /* 0.5 second transition effect to slide in the sidenav */
+ 
+}
+
+/* The navigation menu links */
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: relative;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.main {
+    position: relative;
+}
+.ui.button.view {
+    width: 90%;
+    margin-top:30%;
+    
+ 
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  
+  background-image: -moz-linear-gradient(top, #feac5e, #c779d0, #4bc0c8);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#feac5e), to(#c779d0), to(#4bc0c8));
+  background-image: -webkit-linear-gradient(top, #feac5e, #c779d0, #4bc0c8);
+  background-image: -o-linear-gradient(top, #feac5e, #c779d0, #4bc0c8);
+  background-image: linear-gradient(to bottom, #feac5e, #c779d0, #4bc0c8);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#feac5e', endColorstr='#f4bc0c8', GradientType=0);
+  background-repeat: repeat-y;
+  background-size: 100% 90px;
+  background-position: 0 -30px;
+  -webkit-transition: all 0.2s linear;
+     -moz-transition: all 0.2s linear;
+       -o-transition: all 0.2s linear;
+          transition: all 0.2s linear;
+}
+
+.ui.button.view:hover{
+    width: 90%;
+    margin-top:30%;
+     background-position: 0 0;
+    
+}
+.header > h4 {
+    text-align:center;
+}
+
+.body {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+</style>
+<div>
+    <div id="menu-gallery-menu" class="ui top attached five item menu">
+        <a class="ui icon item menu-actions">
+            <i class="wrench icon"></i>
+        </a>
+        <a class="item content" data-action="menu">
+            locations
+        </a>
+        <a class="item content" data-action="category">
+            untappd
+        </a>
+        <a class="item content" data-action="item">
+            breezy
+        </a>
+        <a class="item content" data-action="ingredient">
+            promos
+        </a>
+    </div>
+    <div>
+    <section class="scrolling-wrapper">
+        <% for (let i = 0; i < locations.length; i++){ %>
+            <div class="card">
+                <img class="item-img" src=".<%=locations[i].image.url%>" width='296px'>
+                <div class="header">
+                    <h4><%=locations[i].name%></h4>
+                </div>
+                <div class="body">
+                    <div class="ui button view">
+                        view location
+                    </div>
+                </div>
+            </div>
+        <% } %>
+        <div class="sidenav">
+            <a href="javascript:void(0)" class="closebtn">&times;</a>
+            <a class="new" data-content="beer">Add Beer</a>
+            <a class="new" data-content="item">New Item</a>
+            <a class="new" data-content="category">New Category</a>
+            <a class="new" data-content="menu">New Menu</a>
+        </div>
+    </section>
+    </div>
+</div>
+<script>
+    $('.ui.dropdown')
+    .dropdown()
+    
+    function locationGalleryController(){
+        let location_gallery_menu = document.getElementById('location-gallery');
+        
+        location_gallery_menu.addEventListener('click', (event) => {
+            let target = event.target;
+            if (target.matches('.new')){
+                let content = target.getAttribute('data-content');
+                getForms(content)
+            } else if (target.matches('.menu-actions')){
+                openNav(target)
+            }
+        })
+        
+        function getForms(content){
+            let modal = document.getElementById('form_modal');
+            let headerDest = modal.querySelector('.header');
+            let contentDest = modal.querySelector('.content');
+            
+            headerDest.innerHTML = `new ${content}`;
+            if (content === 'beer'){
+                contentDest.innerHTML = `<% include ../../admin/forms/location/create-untappd-item %>`;
+                createUntappdItem()
+            } else {
+                contentDest.innerHTML = '';
+            }
+        
+        
+        $(modal).modal({closable: false}).modal('show');
+        }
+        function createUntappdItem(){
+            let form = document.getElementById('add-untappd-item')
+            form.addEventListener('click', (event) => {
+                let target = event.target;
+                if (target.matches('.search')){
+                    console.log(target.parentElement.querySelector('input').value)
+                } else if (target.matches('input')){
+                    target.classList.add('loading')
+                    target.addEventListener('keyup', (e) => {
+                        if (e.keyCode === 13) {
+                            let query = target.value;
+                            console.log(target)
+                            return getBeersFromUntappd(query)
+                            .then((data) => {
+                                console.log(data)
+                                let destination = document.getElementById('untappd_results');
+                                let html = data.items.map(beer => {
+                                    let stuff=  `<div class="ui segment">
+                                                        <img height="50px" src="${beer.label_image_hd}"><span> ${beer.brewery} ${beer.name}</span>
+                                                </div>`
+                                    return stuff;
+                                }).join('');
+                                console.log(html)
+                                destination.innerHTML = html
+                            })
+                        }
+                    })
+                }
+            })
+        }
+    }
+    locationGalleryController()
+</script>

@@ -42,11 +42,11 @@ exports.Storage_Item = multer.diskStorage({
         var raw_title = req.body.name + Date.now();
         var raw_title2 = raw_title.toLowerCase();
         var title = raw_title2.replace(/\s/g, '_');
-        callback(null, title + '.jpg');
+        callback(null, title + '.png');
     }
 });
 
-const accepted_extensions = ['jpg', 'png'];
+const accepted_extensions = ['png'];
 const maxSize = 1 * 7000 * 7000;
 
 
@@ -62,7 +62,7 @@ exports.upload_item = multer({
         if (!file) {
             req.fileValidationError = 'file upload required'
             return cb(null, false, new Error('file missing'))
-        }else if (file.mimetype !== 'image/jpg' && file.mimetype !== 'image/png' && file.mimetype !== "image/JPG"){
+        }else if (file.mimetype !== 'image/png'){
             req.fileValidationError = 'incorrect mimetype';
             return cb(null, false, new Error('wrong file type'))
         }

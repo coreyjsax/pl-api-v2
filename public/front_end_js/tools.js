@@ -3,15 +3,30 @@
 
 
 function openNav(target) {
-  target.querySelector('.sidenav').style.width = "150px";
-  target.querySelector('.main').style.marginLeft = "150px"
-  target.style.backgroundColor = "rgba(0,0,0,0.4)";
+  let gallery = target.closest('.gallery');
+  let sidenav = gallery.querySelector('.sidenav');
+  let content = gallery.querySelector('.main');
+  let section = target.parentElement.parentElement.parentElement.querySelector('section');
+  let cards = section.querySelectorAll('.card');
+      cards = Array.from(cards)
+  let card1 = section.querySelector('.card');
+  
+  cards.map(card => card.style.opacity = ".6");
+  card1.style.marginLeft = "160px";
+  sidenav.style.width = "150px";
+  section.style.backgroundColor = "rgba(0,0,0,0.4)";
 }
 
-function closeNav(gallery) {
-  gallery.querySelector('.sidenav').style.width = '0'; 
-  gallery.querySelector('.main').style.marginLeft = '0';
-  gallery.style.backgroundColor = '';
+function closeNav(target) {
+  target.querySelector('.sidenav').style.width = '0'; 
+  let section = target.querySelector('section');
+  let cards = section.querySelectorAll('.card');
+      cards = Array.from(cards);
+  let card1 = section.querySelector('.card');
+  
+  cards.map(card => card.style.opacity = '1');
+  card1.style.marginLeft = '15px';
+  section.style.backgroundColor = '';
 }
 
 function getModal(params){
@@ -368,17 +383,26 @@ const postItem = (newItem) => {
   return fetch("https://pl-api-v2-coreyjsax.c9users.io/items/create", {
       body,
       headers: {
-        Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTQ3NTI4MTI5fQ.j9L92m-CAFM8GXDnN-voN_OzlVjkqMvxpE4ByZ0yCsE",
+        Authorization: newItem.token,
       },
       method: "POST"
     }).then((res) => {
       let data = res.json();
       return data;
-    }).then((data) => {
-      console.log(data)
     }).catch((error)=>{
       return error
     })
         
 }
 
+//Untappd Seach Request
+
+const getBeersFromUntappd = (query) => {
+  return fetch(`https://pl-api-v2-coreyjsax.c9users.io/location/5c2bbcfb53352c57e74314ff/untappd/search/q=${query}`)
+  .then((res) => {
+    let data = res.json()
+    return data;
+  }).catch((error) => {
+    return error;
+  })
+}
