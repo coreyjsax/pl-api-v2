@@ -94,32 +94,64 @@ a {
 .main {
     position: relative;
 }
+
+.ui.button.view.menu {
+    bottom:20px;
+}
+
+#search-menu:focus{
+    color:#eaeaea;
+}
+#search-menu{
+    color:#a9a9a9;
+}
+#search-menu::selection {
+    color:#d385b2;
+}
+.search.link.icon{
+    color:#eaeaea;
+}
+
 </style>
 <div>
-    <div id="menu-gallery-menu" class="ui top attached five item menu">
+    <div id="menu-gallery-menu" class="ui top attached pointing menu inverted">
         <a class="ui icon item menu-actions">
             <i class="wrench icon"></i>
         </a>
-        <a class="item content" data-action="menu">
+        <a class="item content active" data-action="menu" data-url="/admin-menu/menu">
             menus
         </a>
-        <a class="item content" data-action="category">
+        <a class="item content" data-action="category" data-url="/admin-menu/category">
             categories
         </a>
-        <a class="item content" data-action="item">
+        <a class="item content" data-action="item" data-url="/admin-menu/item">
             items
         </a>
-        <a class="item content" data-action="ingredient">
+        <a class="item content" data-action="ingredient" data-url="/admin-menu/ingredient">
             ingredients
         </a>
+        <div class="right inverted menu">
+            
+            <div class="item" style="flex-grow:1;">
+              <div class="ui transparent icon input">
+                <input id="search-menu" class="search" type="text" placeholder="Search...">
+                <i class="search link icon"></i>
+              </div>
+            </div>
+        </div>
     </div>
     <div>
     <section class="scrolling-wrapper">
         <% for (let i = 0; i < items.length; i++){ %>
             <div class="card">
                 <img class="item-img" src=".<%=items[i].image.url%>" width='296px'>
-                <div>
+                <div class="header">
                     <h4><%=items[i].name%></h4>
+                </div>
+                <div class="body">
+                    <div class="ui button view menu">
+                        view item
+                    </div>
                 </div>
             </div>
         <% } %>
@@ -142,18 +174,41 @@ function menuGalleryController(){
     
     menu_gallery_menu.addEventListener('click', (event) => {
         let target = event.target;
-        console.log(target)
         if (target.matches('.new')){
             let content = target.getAttribute('data-content');
             getForms(content)
-            
         } else if (target.matches('.content')){
+            let menuNav = document.getElementById('menu-gallery-menu');
+            let selected = menuNav.querySelectorAll('a')
+                selected = Array.from(selected)
+            let chosen = selected.filter(link => {
+                return link.classList.contains('active')
+            })
             loadGallery(target)
+            navClick(target, chosen)
         } else if (target.matches('.menu-actions')){
             openNav(target)
+        } else if (target.matches('.search')){
+            let menuNav = document.getElementById('menu-gallery-menu');
+            let selected = menuNav.querySelectorAll('a')
+                selected = Array.from(selected)
+            let chosen = selected.filter(link => {
+                return link.classList.contains('active')
+            })
+            let url = chosen[0].getAttribute('data-url');
+            let search = target.value;
+            
+            listenForSearch(chosen, target)
         }
-        
     });
+    
+    
+    
+    function removeListener(target){
+        target.removeEventListener('keyup', delay);
+    }
+    
+    
     
     function getForms(content){
         let modal = document.getElementById('form_modal');
@@ -185,10 +240,6 @@ function menuGalleryController(){
         
         
         $(modal).modal({closable: false}).modal('show');
-    }
-    
-    function loadGallery(target){
-        
     }
     
     function createIngredientController(){

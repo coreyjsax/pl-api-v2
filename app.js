@@ -18,6 +18,7 @@ const express = require('express'),
       dotenv = require('dotenv').config(),
       promise = require('promise'),
       expressValidator = require('express-validator'),
+      agp = require('api-query-params'),
       expressWs = require('express-ws')(app);
       
       
@@ -62,6 +63,8 @@ const //api routes
       menuBoardRoutes = require('./routes/menu_boards'),
       //admin panel routes
       admin_panel_index_routes = require('./routes/admin_panel/index'),
+      admin_panel_menu_routes = require('./routes/admin_panel/menu'),
+      admin_panel_location_routes = require('./routes/admin_panel/location'),
       //auth routes
       auth_routes = require('./routes/auth/auth');
 
@@ -75,6 +78,8 @@ app.use('/ingredients', api_ingredientRoutes);
 app.use('/items', api_itemRoutes);
 app.use('/category', api_categoryRoutes);
 app.use('/admin', admin_panel_index_routes);
+app.use('/admin-menu', admin_panel_menu_routes);
+app.use('/admin-location', admin_panel_location_routes);
 app.use('/auth', auth_routes);
 
 app.use('/boards', menuBoardRoutes);

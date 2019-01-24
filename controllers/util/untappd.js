@@ -151,10 +151,6 @@ exports.post_new_menu = (locId, data) => {
 //Edit an Untappd Menu
 
 exports.edit_untappd_menu = (untappd_id, menu_id, menu) => {
-    console.log(untappd_id)
-    console.log(menu_id)
-    console.log(menu)
-    
     return request({
        url: `${baseUrl}/menus/${menu_id}`,
        body: menu,

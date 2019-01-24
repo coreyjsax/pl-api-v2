@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/coreyjsax/pl-api-v2#readme",
   "dependencies": {
+    "api-query-params": "^4.9.0",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "csv": "^5.1.1",

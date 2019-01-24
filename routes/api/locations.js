@@ -27,6 +27,8 @@ router.put('/:location_id/untappd/:menu_id/edit', api_location_controller.edit_u
 
 router.post('/:location_id/untappd/:menu_id/section/create', api_location_controller.create_untappd_menu_section);
 
+router.post('/:location_id/untappd/:section_id/item/create', api_location_controller.create_untappd_menu_item);
+
 
 
 router.get('*', (req, res) => {

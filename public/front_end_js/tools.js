@@ -1,6 +1,35 @@
 
+const delay = (function(){
+        let timer = 0;
+        return function(callback, ms){
+            clearTimeout (timer);
+            timer = setTimeout(callback, ms);
+        };
+})();
 
 
+let navClick = (target, chosen) => {
+    let counter = {
+        current: 'menu',
+        previous: ''
+    }
+    console.log(target, chosen[0])
+    let previous = chosen[0].getAttribute('data-action');
+    let current = target.getAttribute('data-action');
+    target.classList.add('active');
+    chosen[0].classList.remove('active')
+}
+    
+function listenForSearch(link, input){
+    console.log(link[0])
+    input.addEventListener('keyup', (e) => {
+        delay(function(){
+            loadGallery(link[0], input.value)
+            console.log(input.value)
+            removeEventListener(input, delay)
+        }, 700);
+    })
+}
 
 function openNav(target) {
   let gallery = target.closest('.gallery');
@@ -35,7 +64,25 @@ function getModal(params){
   let contentDest = modal.querySelector('.content');
 }
 
-
+function loadGallery(target, search){
+  let destination = target.parentElement.parentElement;
+      destination = destination.querySelector('section').parentElement;
+    
+      if (search){
+        
+        let url = target.getAttribute('data-url');
+            url = `${url}/search?${search}`;
+            console.log(url)
+        $(destination).hide().load(url).hide().transition('fly left');
+         
+      } else {
+        let url = target.getAttribute('data-url');
+            url = target.getAttribute('data-url')
+            console.log(url)
+        $(destination).hide().load(url).hide().transition('fly left');
+      }
+          
+}
 
 
     

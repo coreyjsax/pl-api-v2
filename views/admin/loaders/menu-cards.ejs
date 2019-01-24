@@ -1,0 +1,29 @@
+<div>
+
+    <section class="scrolling-wrapper">
+        <% for (let i = 0; i < items.length; i++){ %>
+            <div class="card">
+                <% if (model !== "ingredient") { %>
+                <img class="item-img" src=".<%=items[i].image.url%>" width='296px'>
+                <% } else { %>
+                <img class="item-img" src="../uploads/menus/item/artichoke_dip1548113712635.jpg" width='296px'>
+                <% } %>
+                <div class="header">
+                    <h4><%=items[i].name%></h4>
+                </div>
+                <div class="body">
+                    <div class="ui button view menu">
+                        view item
+                    </div>
+                </div>
+            </div>
+        <% } %>
+        <div class="sidenav">
+            <a href="javascript:void(0)" class="closebtn">&times;</a>
+            <a class="new" data-content="ingredient">New Ingredient</a>
+            <a class="new" data-content="item">New Item</a>
+            <a class="new" data-content="category">New Category</a>
+            <a class="new" data-content="menu">New Menu</a>
+        </div>
+    </section>
+    

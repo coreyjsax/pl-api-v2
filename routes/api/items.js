@@ -8,6 +8,8 @@ const auth_controller = require('../../controllers/auth/auth')
 
 router.get('/', api_item_controller.get_items_all);
 
+router.get('/search', api_item_controller.get_items_search)
+
 router.post('/test', tools_controller.upload_item.single('imagename'), api_item_controller.post_test);
 
 router.post('/test2', tools_controller.upload_category.single('imagename'), api_item_controller.post_test2)

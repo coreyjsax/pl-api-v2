@@ -12,6 +12,23 @@ const fs = require('fs');
 ////////////////////////
 //  Item Controllers  //
 ////////////////////////
+
+exports.get_items_search = (req, res) => {
+    Item.find()
+    .populate('ingredients.list')
+    .populate('locations')
+    .exec((err, docs) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(req.query);
+            res.json(docs)
+        }
+           
+    })
+}
+
+
 exports.post_test2 = (req, res) => {
     let item = {
         name: req.body.name,
@@ -191,6 +208,7 @@ exports.get_items_all_full = (req, res) => {
 }
 
 exports.get_items_by_search = (req, res) => {
+    
     Item.find().
     populate('ingredients.list').
     populate('locations').
