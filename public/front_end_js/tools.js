@@ -12,21 +12,24 @@ let navClick = (target, chosen) => {
     let counter = {
         current: 'menu',
         previous: ''
-    }
-    console.log(target, chosen[0])
+    };
+    console.log(target, chosen[0]);
     let previous = chosen[0].getAttribute('data-action');
     let current = target.getAttribute('data-action');
-    target.classList.add('active');
-    chosen[0].classList.remove('active')
+    if (target !== chosen[0]){
+      target.classList.add('active');
+      chosen[0].classList.remove('active')
+    }
+    
 }
     
 function listenForSearch(link, input){
-    console.log(link[0])
+    console.log(link[0]);
     input.addEventListener('keyup', (e) => {
         delay(function(){
-            loadGallery(link[0], input.value)
-            console.log(input.value)
-            removeEventListener(input, delay)
+            loadGallery(link[0], input.value);
+            console.log(input.value);
+            removeEventListener(input, delay);
         }, 700);
     })
 }
@@ -97,11 +100,11 @@ const getAppetizerPrices = dietArray => {
            ${priceSubHead}
             <div class="field fade-in">
               <label class="fade-in">regular price</label>
-              <input class="fade-in" type="text" name="price" data-text="regular" data-type="reg" placeholder="regular price">
+              <input class="fade-in input" type="text" name="price" data-text="regular" data-type="reg" placeholder="regular price">
             </div>
             <div class="field fade-in">
               <label class="fade-in">large-party price</label>
-              <input class="fade-in" type="text" name="price" data-type="party" data-text="party-size" placeholder="party-sized price">
+              <input class="fade-in input" type="text" name="price" data-type="party" data-text="party-size" placeholder="party-sized price">
             </div>
         
   `;
@@ -111,11 +114,11 @@ const getAppetizerPrices = dietArray => {
         `
             <div class="field fade-in">
               <label class="fade-in">${d[i]} price</label>
-              <input class="fade-in" type="text" name="price" placeholder="${d[i]} price" data-type="${d[i]}" data-text="vegan">
+              <input class="fade-in input" type="text" name="price" placeholder="${d[i]} price" data-type="${d[i]}" data-text="vegan">
             </div>
             <div class="field fade-in">
               <label class="fade-in">vegan party-size price</label>
-              <input class="fade-in" type="text" name="price" placeholder="vegan party-sized price" data-type="vegan_party" data-text="vegan-party-size">
+              <input class="fade-in input" type="text" name="price" placeholder="vegan party-sized price" data-type="vegan_party" data-text="vegan-party-size">
             </div>
         `
     } else if (d[i] === 'gfr'){
@@ -123,11 +126,11 @@ const getAppetizerPrices = dietArray => {
         `
             <div class="field fade-in">
               <label class="fade-in">${d[i]} price</label>
-              <input class="fade-in" type="text" name="price" placeholder="${d[i]} price" data-type="${d[i]}" data-text="gluten-free">
+              <input class="fade-in input" type="text" name="price" placeholder="${d[i]} price" data-type="${d[i]}" data-text="gluten-free">
             </div>
             <div class="field fade-in">
               <label class="fade-in">${d[i]} party-size price</label>
-              <input class="fade-in" type="text" name="price" placeholder="${d[i]}-party-sized price" data-type="gf_party" data-text="gf-party-size">
+              <input class="fade-in input" type="text" name="price" placeholder="${d[i]}-party-sized price" data-type="gf_party" data-text="gf-party-size">
             </div>
         `
     }
@@ -141,16 +144,16 @@ const getSaladPrices = (dietArray) => {
   let prices = `
       <div class="ui section divider fade-in"></div>
             <div class="field fade-in">
-              <label class="fade-in">sm salad price</label>
-              <input class="fade-in" type="text" name="price" placeholder="small salad price" data-type="sm" data-text="small">
+              <label class="fade-in input">sm salad price</label>
+              <input class="fade-in input" type="text" name="price" placeholder="small salad price" data-type="sm" data-text="small">
             </div>
             <div class="field fade-in">
               <label class="fade-in">lg salad price</label>
-              <input class="fade-in" type="text" name="price" placeholder="large salad price" data-type="lg" data-text="large">
+              <input class="fade-in input" type="text" name="price" placeholder="large salad price" data-type="lg" data-text="large">
             </div>
             <div class="field fade-in">
               <label class="fade-in">large-party salad price</label>
-              <input class="fade-in" type="text" name="price" placeholder="party-sized price" data-type="party" data-text="party-size">
+              <input class="fade-in input" type="text" name="price" placeholder="party-sized price" data-type="party" data-text="party-size">
             </div>
   `;
   prices += `<div class="ui section divider fade-in"></div>`;
@@ -163,11 +166,11 @@ const getPastaPrices = (dietArray) => {
       <div class="ui section divider fade-in"></div>
             <div class="field fade-in">
               <label class="fade-in">regular price</label>
-              <input class="fade-in" type="text" name="price" placeholder="regular pasta price" data-type="reg" data-text="regular">
+              <input class="fade-in input" type="text" name="price" placeholder="regular pasta price" data-type="reg" data-text="regular">
             </div>
             <div class="field fade-in">
               <label class="fade-in">large party price</label>
-              <input class="fade-in" type="text" name="price" placeholder="large party price" data-type="party" data-text="party-size">
+              <input class="fade-in input" type="text" name="price" placeholder="large party price" data-type="party" data-text="party-size">
             </div>
   `;
   prices += `<div class="ui section divider fade-in"></div>`;
@@ -181,7 +184,7 @@ const getHoagiePrices = (dietArray) => {
       <div class="ui section divider fade-in"></div>
             <div class="field fade-in">
               <label class="fade-in">regular price</label>
-              <input class="fade-in" type="text" name="price" placeholder="regular hoagie price" data-type="reg" data-text="regular">
+              <input class="fade-in input" type="text" name="price" placeholder="regular hoagie price" data-type="reg" data-text="regular">
             </div>
   `;
   for (let i = 0; i < d.length; i++){
@@ -189,7 +192,7 @@ const getHoagiePrices = (dietArray) => {
       prices += `
       <div class="field fade-in">
               <label class="fade-in">${d[i]} price</label>
-              <input class="fade-in" type="text" name="price" placeholder="vegan hoagie price" data-type="vr" data-text="vegan">
+              <input class="fade-in input" type="text" name="price" placeholder="vegan hoagie price" data-type="vr" data-text="vegan">
             </div>
       `;
     }
@@ -204,21 +207,21 @@ const getPizzaPrices = (dietArray) => {
       <div class="ui section divider fade-in"></div>
             <div class="field fade-in">
               <label class="fade-in">sm 10" pizza price</label>
-              <input class="fade-in" type="text" name="price" placeholder='10"pizza price' data-type="sm" data-text="s">
+              <input class="fade-in input" type="text" name="price" placeholder='10"pizza price' data-type="sm" data-text="s">
             </div>
             <div class="field fade-in">
               <label class="fade-in">med 12" pizza price</label>
-              <input class="fade-in" type="text" name="price" placeholder='12"pizza price' data-type="med" data-text="m">
+              <input class="fade-in input" type="text" name="price" placeholder='12"pizza price' data-type="med" data-text="m">
             </div>
             <div class="field fade-in">
               <label class="fade-in">lg 16" pizza price</label>
-              <input class="fade-in" type="text" name="price" placeholder='16"pizza price' data-type="lg" data-text="l">
+              <input class="fade-in input" type="text" name="price" placeholder='16"pizza price' data-type="lg" data-text="l">
             </div>
             `
   if (dietArray.includes('gfr')){
       prices += `<div class="field fade-in">
                     <label class="fade-in">gluten-free 10" pizza price</label>
-                    <input class="fade-in" type="text" name="price" placeholder='10"gluten free price' data-type="gf" data-text="gfr">
+                    <input class="fade-in" type="text" name="price" placeholder='10"gluten free price' data-type="gfr" data-text="gf">
                 </div>`
   }
   
@@ -437,7 +440,8 @@ const postItem = (newItem) => {
       let data = res.json();
       return data;
     }).catch((error)=>{
-      return error
+      let err = error.json()
+      return err
     })
         
 }

@@ -329,6 +329,6 @@ exports.create_untappd_menu_item = (req, res) => {
     });
 };
 
-//Delete and Untappd Menu
+//Delete an Untappd Menu
 
 

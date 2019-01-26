@@ -195,7 +195,7 @@ exports.get_search_untappd_item = (query) => {
 }
 
 
-//Untapppd Add and Item
+//Untapppd Add an Item
 exports.post_untappd_item = (section_id, body) => {
     return request({
         url: `${baseUrl}/sections/${section_id}/items`,
@@ -203,8 +203,21 @@ exports.post_untappd_item = (section_id, body) => {
         json: true,
         method: 'POST'
     }).then((res) => {
-        return res
+        return res; 
     }).catch((err) => {
-        return err
-    })
-}
+        return err;
+    });
+};
+
+//Untappd Delete an Item
+exports.delete_untappd_item = (item_id) => {
+    return request({
+        url: `${baseUrl}/items/${item_id}`,
+        headers: headers_w,
+        method: 'DELETE'
+    }).then((res) => {
+        return res;
+    }).catch((err) => {
+        return err;
+    });
+};

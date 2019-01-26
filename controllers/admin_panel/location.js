@@ -18,3 +18,7 @@ exports.get_locations = (req, res) => {
             res.render('./admin/loaders/menu-cards', {items: docs, model: model})
     })
 }
+
+exports.get_location_by_id = (req, res) => {
+    
+}
