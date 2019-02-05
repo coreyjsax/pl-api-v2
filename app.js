@@ -17,22 +17,30 @@ const express = require('express'),
       path = require('path'),
       dotenv = require('dotenv').config(),
       promise = require('promise'),
+      passport = require('passport'),
+      GoogleStrategy = require('passport-google-oauth-jwt').GoogleOauthJWTStrategy,
       expressValidator = require('express-validator'),
       agp = require('api-query-params'),
       expressWs = require('express-ws')(app);
-      
-      
-      
-       mongoose.Promise = global.Promise;
+ 
+require('./passport');     
+
+
+mongoose.Promise = global.Promise;
       
 app.use(logResponseTime);
       
 const port = process.env.PORT;
+
+app.use(passport.initialize());
       
 app.set('socketio', io);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+
+
+
 app.use(methodOverride("_method"));
 app.use(expressValidator({
     
@@ -59,6 +67,7 @@ const //api routes
       api_ingredientRoutes = require('./routes/api/ingredients'),
       api_itemRoutes = require('./routes/api/items'),
       api_categoryRoutes = require('./routes/api/category'),
+      api_sectionRoutes = require('./routes/api/section'),
       //menu board routes
       menuBoardRoutes = require('./routes/menu_boards'),
       //admin panel routes
@@ -66,7 +75,9 @@ const //api routes
       admin_panel_menu_routes = require('./routes/admin_panel/menu'),
       admin_panel_location_routes = require('./routes/admin_panel/location'),
       //auth routes
-      auth_routes = require('./routes/auth/auth');
+      auth_routes = require('./routes/auth/auth'),
+      
+      user_routes = require('./routes/user');
 
 
 app.use('/delivery', api_deliveryRoutes);
@@ -81,7 +92,8 @@ app.use('/admin', admin_panel_index_routes);
 app.use('/admin-menu', admin_panel_menu_routes);
 app.use('/admin-location', admin_panel_location_routes);
 app.use('/auth', auth_routes);
-
+app.use('/user', /*passport.authenticate('jwt', {session: false}),*/ user_routes);
+app.use('/section', api_sectionRoutes)
 app.use('/boards', menuBoardRoutes);
 
 //Express Middleware

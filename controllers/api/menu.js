@@ -4,6 +4,7 @@ const Category = require('../../models/category');
 const Menu_Item = require('../../models/menu_item');
 const Item = require('../../models/item');
 const Ingredient = require('../../models/ingredient');
+const Section = require('../../models/section');
 const server_error = {message: 'There was a problem...'};
 
 ////////////////////////
@@ -29,10 +30,26 @@ exports.get_menus = (req, res) => {
     });
 };
 
+//User.populate(user, { path: 'shortList.flat.project', model: 'Project', select: { 'name': 0, 'Floor': 0, 'flats': 0, 'towers': 0,} }
+
 exports.get_all_menus_full = (req, res) => {
     Menu.find().
     populate('categories').
-    populate('locations').
+    populate('locations', 'name online_ordering_url').
+    populate('sections', 'name').
+    populate({
+        path: 'sections',
+        model: 'Section',
+        
+        populate: [
+            {
+                path: 'items', 
+                model: 'Item',
+                select: 'name image description prices'
+            }
+        ]
+    }).
+    
     exec((err, docs) => {
         if (err) {
             if(!docs){
@@ -44,6 +61,10 @@ exports.get_all_menus_full = (req, res) => {
             if (docs.length === 0){
                 res.status(404).send({status: 404, message: 'No menus found'});
             } else {
+              /* let filtered = docs.filter(menu => {
+                   return menu.sections.items.prices.type === 'reg';
+                }) */
+                //console.log(filtered)
                 res.json(docs)
             }
         }
@@ -69,16 +90,51 @@ exports.get_menu_by_id = (req, res) => {
     });
 };
 
+//Delete a menu
+exports.deleteMenuById = (req, res) => {
+    Menu.findByIdAndRemove(req.params.menu_id, (err, doc) => {
+       if(err){
+           res.send(err);
+       } else {
+           Section.remove({menu_id: req.params.menu_id}, (err, sections) => {
+               res.status(201).json({status: 201, message: `Menu ${req.params.menu_id} has been deleted`});
+           })
+           
+       }
+    });
+};
+
 //Get Menu by ID full 
 exports.get_menu_by_id_full = (req, res) => {
     let menuReq = Menu.findById(req.params.menu_id)
                   .populate('categories')
                   .populate('locations', 'nickname name')
+                  .populate('sections', 'name, items')
                   .exec();
     Promise.all([menuReq])
     .then(([menu]) => {
         res.json(menu)
     }).catch((err) => {
         res.status(500).json({code: 500, error: err});
+    })
+}
+
+exports.post_new_menu = (req, res) => {
+    
+    const menu = {
+        name: req.body.name,
+        description: req.body.description,
+        categories: req.body.categories,
+        locations: req.body.locations,
+        order_type: req.body.order_type, 
+        menu_items: req.body.menu_items,
+    }
+    
+    Menu.create(menu, (err, newMenu) => {
+        if (err) {
+            res.status(500).json(err)
+        } else {
+            res.status(201).json({status: 201, data: newMenu});
+        }
     })
 }

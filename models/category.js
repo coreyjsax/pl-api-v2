@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 var Categories_Schema = new mongoose.Schema({
     name: String, 
-    description: String, 
+    description: [], 
     image: {
         image_name: String, 
         upload_date: {

@@ -5,6 +5,7 @@ const Menu_Item = require('../../models/menu_item');
 const Item = require('../../models/item');
 const ItemTest = require('../../models/item_test');
 const Ingredient = require('../../models/ingredient');
+const Section = require('../../models/section');
 const server_error = {message: 'There was a problem...'};
 const {body} = require('express-validator/check');
 const tools = require('../../controllers/util/tools');
@@ -269,6 +270,52 @@ exports.get_array_items_by_search = (req, res) => {
         }
     });
 };
+
+exports.add_item_to_section = (req, res) => {
+    let sectionReq = Section.findById(req.params.section_id).exec();
+    let itemReq = Item.findById(req.params.item_id).exec();
+    
+    Promise.all([sectionReq, itemReq])
+    .then(([section, item]) => {
+        section.items.push(req.params.item_id);
+        section.save();
+        return section;
+    }).then((section) => {
+        Section.find({_id: req.params.section_id})
+        .populate('items', 'name')
+        .exec((err, section) => {
+            if (err){
+                res.status(500)
+            } else {
+                res.json(section)
+            }
+        })
+    })
+    
+}
+
+exports.addItemArrayToSection = (req, res) => {
+    let item_array = req.body.items;
+    
+    Section.findById(req.params.section_id)
+    .exec((err, doc) => {
+        if (err){
+            res.status(500);
+        } else {
+            if (doc.length === 0){
+                res.status(404).send({status: 404, message: 'No menus found'});
+            } else {
+                console.log(item_array.length)
+               
+               for (let i=0; i < item_array.length; i++){
+                   doc.items.push(item_array[i]);
+               }
+               doc.save();
+               res.json(doc)
+            }
+        }
+    })
+}
 
 exports.filterArrays = (results, query) => {
     let data = {};

@@ -1,9 +1,11 @@
 // AuthController.js
 //var User = require('../user/User');
 const jwt = require('jsonwebtoken');
-
+const passport = require('passport')
 const username = "admin";
 const password = '123456';
+
+
 
 exports.log_in_user = (req, res, next) => {
     let p_username = req.body.username;
@@ -38,8 +40,15 @@ exports.ensureToken = (req, res, next) => {
         jwt.verify(bearerToken, 'secretKey', (err, result) => {
             if(err) {res.sendStatus(403)}
             else {next()}
-        })
+        });
     } else {
-        res.sendStatus(403)
+        res.sendStatus(403);
     }
+};
+
+exports.confirm = (req, res, next) => {
+     passport.authenticate(['jwt'], { session: false }),
+  (req, res) => {
+    res.send('Secure response from ' + JSON.stringify(req.user));
+  }
 }

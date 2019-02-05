@@ -185,6 +185,8 @@ a {
                 return link.classList.contains('active')
             })
             navClick(target, chosen)
+            } else if (target.parentElement.matches('.menu-actions')){
+                openNav(target.parentElement)
             }
         })
         

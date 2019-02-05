@@ -18,6 +18,10 @@ router.post('/create',  auth_controller.ensureToken, tools_controller.upload_ite
 
 router.get('/full', api_item_controller.get_items_all_full);
 
+router.post('/section/:section_id', api_item_controller.addItemArrayToSection);
+
+router.post('/:item_id/section/:section_id', api_item_controller.add_item_to_section);
+
 router.delete('/:id', auth_controller.ensureToken, api_item_controller.delete_item);
 
 //router.get('/search', api_item_controller.get_items_by_search);

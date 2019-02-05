@@ -199,6 +199,8 @@ function menuGalleryController(){
             let search = target.value;
             
             listenForSearch(chosen, target)
+        } else if (target.parentElement.matches('.menu-actions')){
+            openNav(target.parentElement)
         }
     });
     
