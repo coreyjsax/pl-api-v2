@@ -4,7 +4,15 @@ const request = require('request-promise-cache');
 const multer = require('multer');
 const fileType = require('file-type');
 const fs = require('fs');
+const agp = require('api-query-params');
+const mongoose = require('mongoose');
 
+const Menu = require('../../models/menu');
+const Category = require('../../models/category');
+const Menu_Item = require('../../models/menu_item');
+const Item = require('../../models/item');
+const Ingredient = require('../../models/ingredient');
+const Section = require('../../models/section');
 
 exports.tools = {
     dateTime: function(){
@@ -90,3 +98,16 @@ exports.upload_category = multer({
     storage: exports.Storage_Category,
 }); 
 
+
+//// Menu Models Functions ////
+exports.docIdsByQuery = function(query){
+    let promise = Item.find(query).select('_id').exec();
+    return promise.then((docs) => {
+        let array = docs.map(doc => {
+            return doc._id;
+        });
+        return array;
+    }).catch((err) => {
+        return err;
+    });
+}

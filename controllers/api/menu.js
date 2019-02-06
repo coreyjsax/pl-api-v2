@@ -6,7 +6,9 @@ const Item = require('../../models/item');
 const Ingredient = require('../../models/ingredient');
 const Section = require('../../models/section');
 const server_error = {message: 'There was a problem...'};
-
+const agp = require('api-query-params');
+const mongoose = require('mongoose');
+const tools = require('../../controllers/util/tools');
 ////////////////////////
 //  Menu Controllers  //
 ////////////////////////
@@ -111,11 +113,12 @@ exports.get_menu_by_id_full = (req, res) => {
                   .populate('locations', 'nickname name')
                   .populate('sections', 'name, items')
                   .exec();
-    Promise.all([menuReq])
-    .then(([menu]) => {
+    
+    menuReq
+    .then((menu) => {
         res.json(menu)
     }).catch((err) => {
-        res.status(500).json({code: 500, error: err});
+        res.status(400).json({code: 400, error: err});
     })
 }
 
@@ -138,3 +141,18 @@ exports.post_new_menu = (req, res) => {
         }
     })
 }
+
+exports.filterMenus = (req, res) =>  {
+  
+    let promise = tools.docIdsByQuery(req.params.model, req.query)
+    promise.then((idArray) => {
+        res.json(idArray)
+    });
+ 
+}
+
+
+
+
+
+
