@@ -30,7 +30,7 @@ mongoose.Promise = global.Promise;
       
 app.use(logResponseTime);
       
-const port = process.env.PORT || 8000;
+const port = process.env.PORT;
 
 app.use(passport.initialize());
       
@@ -55,7 +55,7 @@ app.use(express.static(__dirname + "/public"));
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 
-mongoose.connect('mongodb://admin:Summit123@ds053894.mlab.com:53894/pl-admin-beta')
+mongoose.connect(process.env.DB)
 
 //routes
 const //api routes
@@ -104,7 +104,13 @@ app.use(morgan('dev'));
 
 
 
-server.listen(port, () => {
-    console.log('App is running on port ' + port)
-})
 
+module.exports = app;
+
+app.start = app.listen = function(){
+    return server.listen.apply(server, arguments)
+}
+
+app.start(process.env.PORT, () => {
+    console.log('PL API V2 has started')
+})
