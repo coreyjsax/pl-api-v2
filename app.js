@@ -55,7 +55,7 @@ app.use(express.static(__dirname + "/public"));
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs');
 
-mongoose.connect(process.env.DB)
+mongoose.connect('mongodb://admin:Summit123@ds053894.mlab.com:53894/pl-admin-beta')
 
 //routes
 const //api routes
