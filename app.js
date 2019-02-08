@@ -30,7 +30,7 @@ mongoose.Promise = global.Promise;
       
 app.use(logResponseTime);
       
-const port = process.env.PORT;
+const port = process.env.PORT || 8000;
 
 app.use(passport.initialize());
       
@@ -104,14 +104,7 @@ app.use(morgan('dev'));
 
 
 
-
-module.exports = app;
-
-app.start = app.listen = function(){
-    return server.listen.apply(server, arguments)
-}
-
-app.start(process.env.PORT, () => {
-    console.log('PL API V2 has started')
+server.listen(port, () => {
+    console.log('App is running on port ' + port)
 })
 
