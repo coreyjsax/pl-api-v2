@@ -111,8 +111,6 @@ app.start = app.listen = function(){
     return server.listen.apply(server, arguments)
 }
 
-app.listen(process.env.PORT || 3000);
-
 app.start(process.env.PORT, () => {
     console.log('PL API V2 has started')
 })
