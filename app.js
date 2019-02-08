@@ -115,4 +115,3 @@ app.start(process.env.PORT, () => {
     console.log('PL API V2 has started')
 })
 
-server.listen(process.env.PORT || port)
