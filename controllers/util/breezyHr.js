@@ -68,6 +68,22 @@ exports.getPositions = function(state) {
     })
 }
 
+exports.createPosition = function(position) {
+    return request({
+        url: breezyHrReqs.company + breezyKeys.company_id + `/positions`,
+        headers: {
+            Authorization: breezyKeys.access_token,
+            "Content-Type": "application/json"
+        },
+        method: "POST"
+    }).then((res) => {
+        let data = JSON.parse(res);
+        return data;
+    }).catch((err) => {
+        return err;
+    })
+}
+
 exports.main = function(params){
     return exports.getUser()
     .then(exports.getUserId)

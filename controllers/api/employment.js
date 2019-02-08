@@ -130,6 +130,15 @@ exports.get_positions_by_category = (req, res) => {
     })
 }
 
+//post position
+exports.postNewPosition = (req, res) => {
+    console.log(req.body)
+    return breezy.createPosition(JSON.stringify(req.body))
+    .then((position) => { 
+        res.json(position)
+    })
+}
+
 Array.prototype.unique = function(){
     return this.filter(function(value, index, self) {
         return self.indexOf(value) === index;
