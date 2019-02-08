@@ -4,7 +4,10 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start":"app.js"
+    "start":"node app.js"
+  },
+  "engines": {
+    "node": "8.9.3"
   },
   "repository": {
     "type": "git",
