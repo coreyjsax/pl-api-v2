@@ -14,7 +14,9 @@ exports.get_locations = (req, res) => {
     let model = 'location';
     Location.find().
     exec((err, docs) => {
-        if (err) console.log(err)
+        if (err) {
+            res.send(err)
+        }
             res.render('./admin/loaders/menu-cards', {items: docs, model: model})
     })
 }

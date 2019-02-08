@@ -13,7 +13,6 @@ let navClick = (target, chosen) => {
         current: 'menu',
         previous: ''
     };
-    console.log(target, chosen[0]);
     let previous = chosen[0].getAttribute('data-action');
     let current = target.getAttribute('data-action');
     if (target !== chosen[0]){
@@ -24,11 +23,9 @@ let navClick = (target, chosen) => {
 }
     
 function listenForSearch(link, input){
-    console.log(link[0]);
     input.addEventListener('keyup', (e) => {
         delay(function(){
             loadGallery(link[0], input.value);
-            console.log(input.value);
             removeEventListener(input, delay);
         }, 700);
     })
@@ -75,13 +72,11 @@ function loadGallery(target, search){
         
         let url = target.getAttribute('data-url');
             url = `${url}/search?${search}`;
-            console.log(url)
         $(destination).hide().load(url).hide().transition('fly left');
          
       } else {
         let url = target.getAttribute('data-url');
             url = target.getAttribute('data-url')
-            console.log(url)
         $(destination).hide().load(url).hide().transition('fly left');
       }
           
@@ -429,7 +424,6 @@ const postItem = (newItem) => {
         body.append("prices", JSON.stringify(newItem.prices))
         body.append("notes", newItem.notes)
         body.append("imagename", file)
-    console.log(body)
   return fetch("https://pl-api-v2-coreyjsax.c9users.io/items/create", {
       body,
       headers: {

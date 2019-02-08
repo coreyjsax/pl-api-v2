@@ -76,6 +76,8 @@ const //api routes
       admin_panel_location_routes = require('./routes/admin_panel/location'),
       //auth routes
       auth_routes = require('./routes/auth/auth'),
+      //module routes
+      untappd_routes = require('./modules/print_menus/routes/untappd'),
       
       user_routes = require('./routes/user');
 
@@ -95,6 +97,8 @@ app.use('/auth', auth_routes);
 app.use('/user', /*passport.authenticate('jwt', {session: false}),*/ user_routes);
 app.use('/section', api_sectionRoutes)
 app.use('/boards', menuBoardRoutes);
+
+app.use('/untappd-print', untappd_routes);
 
 //Express Middleware
 app.use(morgan('dev'));

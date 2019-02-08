@@ -106,7 +106,7 @@ exports.edit_category = (req, res) => {
             let image_path = doc.image.url;
             fs.unlink('./public/' + image_path, function(err){
                 if (err) {
-                    console.log(err);
+                   res.send(err)
                 }
                 console.log('file has been deleted')
             })
