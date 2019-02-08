@@ -6,9 +6,7 @@
   "scripts": {
     "start":"node app.js"
   },
-  "engines": {
-    "node": "8.9.3"
-  },
+  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/coreyjsax/pl-api-v2.git"
