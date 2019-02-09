@@ -98,7 +98,7 @@ app.use('/user', /*passport.authenticate('jwt', {session: false}),*/ user_routes
 app.use('/section', api_sectionRoutes)
 app.use('/boards', menuBoardRoutes);
 
-app.use('/untappd-print', untappd_routes);
+app.use('/untappd', untappd_routes);
 
 //Express Middleware
 app.use(morgan('dev'));

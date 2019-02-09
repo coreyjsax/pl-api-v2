@@ -7,6 +7,9 @@ router.get('/', function(req, res) {
     res.send('test')
 })
 
-router.get('/:locId/:taps_id/:bottles_id', print_menu_controller.getUntappdPrintFull);
+router.get('/print/:locId/:taps_id/:bottles_id', print_menu_controller.getUntappdPrintFull);
+
+router.get('/boards/:aspect/:locId/:menu_id', print_menu_controller.getUntappdTapsBoard);
+
 
 module.exports = router;

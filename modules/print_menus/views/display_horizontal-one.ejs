@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Bhaina|Chelsea+Market|Emblema+One|Finger+Paint|Kumar+One|Schoolbell" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>	
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css">
+	
+	<link rel="stylesheet" type="text/css" href="/css/fonts.css">
+
+
+
+
+<style>
+    body {
+        background-image: url('/img/menu-boards/blackboard.jpg');
+    }
+    .headline {
+        color:#ff0061;
+        font-size:80px;
+        font-family: 'Stay-Weird', cursive;
+        text-align:left;
+    }
+    .beer-grid {
+        margin-top:85px;
+        margin-left:50px;
+        
+        
+    }
+    .column {
+        line-height:30px;
+        color:white;
+        width: 100%;
+        
+    }
+    .list {
+        font-family: 'TuckShop-Regular', cursive;
+        color:white;
+        opacity:.8;
+        font-size: 60px;
+    }
+    .row {
+        
+    }
+    
+    .line1 {
+        line-height:70px;
+        
+    }
+    .line2 {
+        
+    }
+    .left {
+        text-align:left;
+    }
+</style>
+
+
+</head>
+<body>
+    <% let items = untappd_menu.menu.sections[0].items; %>
+    
+    <div class="beer-grid">
+        <h4 class="headline">Tap Beer List</h4>
+        <div class="ui two column grid">
+            <div class="row">
+                <div class="beer column left">
+                    <div class="beer-list left">
+                        <% for (var i = 0; i < (items.length) - 11; i++) { %>
+                            <div class="brewery list stuff">
+                                <div class="row">
+                                    <% let brewery = items[i].brewery; 
+                                           brewery = brewery.replace('Company', '');
+                                           brewery = brewery.replace('Co.', '');
+                                           brewery = brewery.replace('Cooperative', '');
+                                           brewery = brewery.replace('Brewing', '')
+                                           
+                                        let style = items[i].style;
+                                            style = style.substring(0, style.indexOf('-'));
+                                            
+                                    %>
+                                    <span class="line1 left"><%=brewery%>&nbsp;<%=items[i].name%>&nbsp;|
+                                        <% if (style) { %>
+                                           &nbsp;<span class="line2"><%=style%>
+                                        <% } else { %>
+                                            &nbsp;<%=items[i].style%>
+                                        <% } %>
+                                       &nbsp;<%=items[i].abv%>%</span>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                
+                <div class="beer column right">
+                    <div class="beer-list right">
+                        <% for (var i = 12; i < items.length; i++) { %>
+                             <div class="brewery list stuff">
+                                <div class="row">
+                                    
+                                    <%  brewery = items[i].brewery  
+                                        brewery = brewery.replace('Company', '');
+                                        brewery = brewery.replace('Co.', '');
+                                        brewery = brewery.replace('Cooperative', '');
+                                        brewery = brewery.replace('Brewing', '');
+                                        
+                                        style = items[i].style;
+                                        style = style.substring(0, style.indexOf('-'));
+                                       
+                                    %>
+                                    <span class="line1 right"><%=brewery%>&nbsp;<%=items[i].name%>&nbsp;|
+                                    <% if (style) { %>
+                                        <%=style%> 
+                                    <% } else { %> 
+                                        <%=items[i].style%>
+                                    <% } %>
+                                    &nbsp;<%=items[i].abv%>%</span>
+                                    
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+                
+            </div>
+                
+            
+            
+                
+        </div>
+    </div>
+   
+    
+   
+    
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+
+	
+
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Bhaina|Chelsea+Market|Emblema+One|Finger+Paint|Kumar+One|Schoolbell" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>	
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css">
+	<link rel="stylesheet" type="text/css" href="/css/demo.css" />
+	<link rel="stylesheet" type="text/css" href="/css/component.css" />
+	<link rel="stylesheet" type="text/css" href="/css/fonts.css">
+	<link rel="stylesheet" type="text/css" href="/css/vertical-menu-board.css" />
+
+</head>
+<style>
+     body {
+        background-image: url('/img/menu-boards/blackboard.jpg');
+    }
+    
+    .list {
+        font-family: 'TuckShop-Regular', cursive;
+        color:white;
+        opacity:.8;
+    }
+</style>
+<body>
+    <% let items = untappd_menu.menu.sections[0].items; %> 
+<div class="rotate-wrapper">
+    <div class=rotatetwo>
+    <div class="beer-grid">
+   
+    <div class="ui two column grid">
+        <h4 class="headline">Our Tap Beer List</h4>
+        <% for (var i = 0; i < items.length; i++) { %>
+            <div class="brewery list stuff">
+                <div class="row">
+                     
+                    <%
+                        let brewery = items[i].brewery;
+                            brewery = brewery.replace('Company', '');
+                            brewery = brewery.replace('Co.', '');
+                            brewery = brewery.replace('Cooperative', '');
+                            brewery = brewery.replace('Brewing', '')
+                                           
+                        let style = items[i].style;
+                            style = style.substring(0, style.indexOf('-'));
+                    %>
+                    <span class="line1 left"><%=brewery%>&nbsp;<%=items[i].name%>&nbsp;|
+                        <% if (style) { %>
+                            &nbsp;<span class="line2"><%=style%>
+                        <% } else { %>
+                            &nbsp;<%=items[i].style%>
+                        <% } %>
+                            &nbsp;<%=items[i].abv%>%</span>
+                </div>
+            </div>
+        <% } %>
+        
+        
+        
+    </div>
+    </div>
+    </div>
+
+
+
+
+
+
+<script>
+    function toggleContent(navLink){
+        var container = document.getElementById('newlocation');
+        var poster = container.getElementsByClassName('poster');
+        $('#location-gallery').hide().load(`/location/${navLink}`).fadeIn('slow');
+    }
+    function resetLocations(){
+    	$('#location-gallery').hide().load('/location/all').fadeIn('slow');
+    }
+    function flipCards(id){
+       var trigger = document.getElementById(id);
+       var card = trigger.closest('.card');
+       var locationId = trigger.id.slice(0, (id.indexOf('-')))
+       var frontContent = document.getElementById(`${locationId}-content`);
+       card.style.transform = "rotateY(180deg)";
+       card.style.transition = "transform 0.5s";
+       $('#location-gallery').hide().load('/location/').fadeIn('slow')
+    }
+    function loadLocationById(button_id){
+    	var location_id = button_id.slice(0, (button_id.indexOf('-')));
+    	var location_hero_content = document.getElementById('location-hero-content');
+    	var custom_page = document.getElementById('page-custom');
+    	var loc_header = document.getElementById('page-locations-header');
+    	var page = document.getElementById('page-locations');
+    	var location_gallery = document.getElementById('location-gallery');
+    	var pages_stack = document.getElementsByClassName('pages-stack');
+    	var locationByIdPage = document.getElementById('location-id');
+    	var newlocation = document.getElementById('newlocation');
+    	var page_location_by_id = document.getElementById('pages_location_by_id');
+    	
+    	newlocation.style.height = '1000px';
+    	locationByIdPage.style.display = 'none';
+    	custom_page.style.display = 'none';
+    	loc_header.style.display= 'none';
+    	location_gallery.style.display = 'none';
+    	location_hero_content.style.display="block";
+    	page.style.height = "1000px";
+    	pages_stack[0].style.height = "1000px";
+    	$('#hero-content').hide().load(`/location/${location_id}`).fadeIn('slow');
+    //	alert(location_id)
+    }
+    function closeLocShowPage(){
+    	var location_hero_content = document.getElementById('location-hero-content');
+    	var custom_page = document.getElementById('page-custom');
+    	var loc_header = document.getElementById('page-locations-header');
+    	loc_header.style.display= 'block';
+    	location_hero_content.style.display = "none";
+    	custom_page.style.display = 'none';
+    	
+    }
+    function tabbedMenus(target, menuName, locationId){
+		$(`#${menuName} .menu .item`).tab({
+		context: $(`#${menuName}`)
+		});
+		
+		if (menuName === "untappd-nav") {
+			var data = {
+				target: target,
+				menu: menuName,
+				locationId: locationId
+			}
+			untappdData(data);
+		}
+    }
+    
+    function locationTabs(target, menuName, locationId){
+        $('.menu .item')
+            .tab();
+            
+        var storeId = locationId.slice(0, (locationId.indexOf('-')))
+        if (menuName === "untappd") {
+            var data = {
+                target: target,
+				menu: menuName,
+				locationId: storeId
+            }
+        }   untappdRequest(data);
+    }
+   
+   function untappdData(data){
+   		
+   		var element = data.target;
+   		var attribute = data.target.getAttribute('data-tab');
+   		//var locationId = element.closest('.untappd-nav')
+   	//	console.log(data.locationId)
+   		if (attribute === "untappd-menus") {
+   			var section = document.getElementById(attribute);
+   			var destination = section.getElementsByClassName('content-holder')[0]
+   			$(destination).hide().load(`/location/${data.locationId}/untappd`).fadeIn('slow');
+   		}
+   }
+   
+   function untappdRequest(data){
+       var section = document.getElementById(data.menu);
+       var destination = section.getElementsByClassName('content-holder')[0]
+       $(destination).hide().load(`/location/${data.locationId}/untappd`).fadeIn('slow');
+       $('.ui.accordion').accordion();
+   }
+   
+   function processUrl(menu_id, store_id, action){
+       var url = `/location/${store_id}/untappd/${action}/${menu_id}`;
+       window.open(url);
+   }
+   
+    document.addEventListener('click', (event) => {
+    	console.log(event.target)
+        if (event.target.matches('.nav')){
+            var navLink = event.target.id;
+            toggleContent(navLink)
+        } else if (event.target.matches('.locations-all')) {
+        	resetLocations()
+        } else if (event.target.matches('.edit-location')) {
+        	flipCards(event.target.id)
+        } else if (event.target.matches('.view-location')) {
+        	loadLocationById(event.target.id)
+        } else if (event.target.matches('.go-back')) {
+        	closeLocShowPage(event.target.id)
+        } else if (event.target.parentElement.matches('.tabbed-menu')) {
+        	var menuName = event.target.parentElement.parentElement.id
+        	var locationId = event.target.parentElement.parentElement.getAttribute('store-id');
+        	tabbedMenus(event.target, menuName, locationId)
+        } else if (event.target.matches('.menu-button--open')) {
+        	showAllPages();
+        } else if (event.target.parentElement.matches('.tabular')) {
+            var menuName = event.target.getAttribute('data-tab');
+            var locationId = event.target.parentElement.id;
+             locationTabs(event.target, menuName, locationId)
+        } else if (event.target.parentElement.parentElement.matches('.menu-controls')) {
+            var parent = event.target.parentElement.parentElement;
+            var menu_id = parent.getAttribute('menu-id');
+            var store_id = parent.getAttribute('store-id');
+            var action = event.target.getAttribute('action');
+            processUrl(menu_id, store_id, action);
+        }
+    });
+    
+	function prepareDocs(){
+		var pages = document.getElementsByClassName('page');
+		   	for (var i = 0; i < pages.length; i++) {
+		   		if(pages[i].id != "page-admin") {
+		   			pages[i].style.display = "none";
+		   		}
+		   	}
+    }
+    
+    function showAllPages(){
+    	var pages = document.getElementsByClassName('page');
+    		for (var i = 0; i < pages.length; i++) {
+    			if(pages[i].id != "page-location_by_id") {
+    				pages[i].style.display = "block";
+    			}
+    		}
+    }
+    
+    function alternatingRows(){
+        var brewery = document.getElementsByClassName('stuff');
+        var beer = document.getElementsByClassName('thing');
+        var style = document.getElementsByClassName('other');
+        var abv = document.getElementsByClassName('banana')
+        var array = [
+            brewery, beer, style, abv
+            ];
+            
+        for (var i = 0; i < array.length; i++){
+            colorLoop(array)
+        }
+    }
+    
+function colorLoop(array){
+    
+    for(var i = 0; i < array.length; i++){
+        for(var j=0; j < array[i].length; j++) {
+                 if (j%3 == 0) {
+                    array[i][j].childNodes[0].classList.add('pink');
+                } else if ((j+1)%3 == 0) {
+                    array[i][j].childNodes[0].classList.add('blue');
+                 } else if ((j+2)%3 == 0) {
+                 array[i][j].childNodes[0].classList.add('yellow')
+               }
+        }
+    }
+}
+alternatingRows()
+prepareDocs();
+//Semnatic UI stuff
+ $('.special.cards .image').dimmer({on: 'hover'});
+
+
+
+
+</script>
+</div>
+</body>
+
+</html>
+

@@ -71,6 +71,7 @@ exports.getPositions = function(state) {
 exports.createPosition = function(position) {
     return request({
         url: breezyHrReqs.company + breezyKeys.company_id + `/positions`,
+        body: position,
         headers: {
             Authorization: breezyKeys.access_token,
             "Content-Type": "application/json"

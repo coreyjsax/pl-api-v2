@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Bhaina|Chelsea+Market|Emblema+One|Finger+Paint|Kumar+One|Schoolbell" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>	
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/semantic.min.css">
+	
+	<link rel="stylesheet" type="text/css" href="/css/fonts.css">
+
+
+
+
+<style>
+    body {
+        background-image: url('/img/menu-boards/blackboard.jpg');
+    }
+    .beer-grid {
+        margin-top:100px;
+        margin-left:300px;
+    }
+    .column {
+        line-height:11px;
+        color:white;
+    }
+    .list {
+        font-family: 'TuckShop-Regular', cursive;
+        color:white;
+        opacity:.8;
+        font-size: 40px;
+    }
+</style>
+
+
+</head>
+
+<body>
+
+
+    <div class="beer-grid">
+    <div class="ui two column grid">
+        
+        <% for (var i = 0; i < untappd_menu.menu.sections.length; i++) { %>
+        <%      let items = untappd_menu.menu.sections[i].items; %>
+            <% for (var j = 0; j < untappd_menu.menu.sections[i].items.length; j++) {%>
+                       <div class="row"> 
+                            
+                            <div class="brewery list stuff">
+                                <% 
+                                    let brewery = items[j].brewery;
+                                        brewery = brewery.replace('Company', '');
+                                        brewery = brewery.replace('Co.', '');
+                                        brewery = brewery.replace('Cooperative', '');
+                                        brewery = brewery.replace('Brewing', '');
+                                        
+                                    let name = items[j].name;
+                                    let style = items[j].style;
+                                    let abv = items[j].abv;
+                                %>
+                                
+                                <span><%=brewery%></span>
+                                <span><%=name%></span>
+                                <span><%=style%></span>
+                                <span><%=abv%></span>
+                            </div>
+                       </div>
+            <% } %>
+             
+        <% } %>
+    </div>
+    </div>
+
+
+
+
+
+
+
+<script>
+   
+</script>
+</body>
+
+</html>
+
