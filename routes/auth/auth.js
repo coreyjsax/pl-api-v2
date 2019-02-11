@@ -9,7 +9,7 @@ const auth_controller = require('../../controllers/auth/auth');
 
 
 /* POST login. */
-router.post('/login', function (req, res, next) {
+/*router.post('/login', function (req, res, next) {
 
 passport.authenticate('local', {session: false}, (err, user, info) => {
         if (err || !user) {
@@ -31,16 +31,20 @@ const token = jwt.sign(user, 'your_jwt_secret');
         });
     })(req, res);
 });
+*/
 
 
+//router.post('/', auth_controller.log_in_user);
 
-router.post('/', auth_controller.log_in_user);
+router.get('/login', auth_controller.logInPage);
 
+//router.get('/login/confirm', auth_controller.redirect);
 
+router.post('/gtoken', auth_controller.gToken)
 
 //const jwt = require('./')
 
-//Require auth controller 
+//Require auth controller
 
 
 

@@ -24,6 +24,8 @@ router.get('/positions/:location/:state', api_employment_controller.get_position
 
 router.post('/positions/create', api_employment_controller.postNewPosition);
 
+router.put('/positions/edit/:pos_id/:state', api_employment_controller.editPositionState);
+
 
 
 

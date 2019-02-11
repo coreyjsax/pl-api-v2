@@ -9,7 +9,7 @@ router.get('/search', api_ingredients_controller.ingredient_get_search_tag);
 
 router.get('/:id', api_ingredients_controller.ingredient_get_id);
 
-router.post('/create',  auth_controller.ensureToken, api_ingredients_controller.ingredient_create_post);
+router.post('/create', api_ingredients_controller.ingredient_create_post);
 
 router.put('/:id', api_ingredients_controller.ingredient_put_id);
 

@@ -132,9 +132,20 @@ exports.get_positions_by_category = (req, res) => {
 
 //post position
 exports.postNewPosition = (req, res) => {
-    console.log(req.body)
     return breezy.createPosition(JSON.stringify(req.body))
     .then((position) => { 
+        res.json(position)
+    })
+}
+
+//update position state
+exports.editPositionState = (req, res) => {
+    let id = req.params.pos_id;
+    let state = {
+        state: req.params.state
+    }
+    return breezy.editPosition(id, JSON.stringify(state))
+    .then((position) => {
         res.json(position)
     })
 }

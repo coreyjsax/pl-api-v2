@@ -14,7 +14,7 @@ router.post('/test', tools_controller.upload_item.single('imagename'), api_item_
 
 router.post('/test2', tools_controller.upload_category.single('imagename'), api_item_controller.post_test2)
 
-router.post('/create',  auth_controller.ensureToken, tools_controller.upload_item.single('imagename'), api_item_controller.validate_item, api_item_controller.post_item_create)
+router.post('/create', tools_controller.upload_item.single('imagename'), api_item_controller.validate_item, api_item_controller.post_item_create)
 
 router.get('/full', api_item_controller.get_items_all_full);
 
@@ -22,7 +22,7 @@ router.post('/section/:section_id', api_item_controller.addItemArrayToSection);
 
 router.post('/:item_id/section/:section_id', api_item_controller.add_item_to_section);
 
-router.delete('/:id', auth_controller.ensureToken, api_item_controller.delete_item);
+router.delete('/:id', api_item_controller.delete_item);
 
 //router.get('/search', api_item_controller.get_items_by_search);
 

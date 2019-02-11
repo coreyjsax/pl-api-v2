@@ -30,7 +30,6 @@ exports.getUntappdPrintFull = (req, res) => {
                 return payload;
             }).then((payload) => {
                res.render('../modules/print_menus/views/print_2up_full', payload);
-               //res.json(payload)
             });
         }
     });
@@ -55,7 +54,6 @@ exports.getUntappdTapsBoard = (req, res) => {
                 return payload;
             }).then((payload) => {
                 res.render(`../modules/print_menus/views/${req.params.aspect}`, payload)
-                //res.json(payload)
             })
         }
     })

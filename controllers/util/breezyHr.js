@@ -82,14 +82,31 @@ exports.createPosition = function(position) {
         return data;
     }).catch((err) => {
         return err;
-    })
-}
+    });
+};
+
+exports.editPosition = function(id, body) {
+    return request({
+        url: breezyHrReqs.company + breezyKeys.company_id + `/position/${id}/state`,
+        body: body,
+        headers: {
+            Authorization: breezyKeys.access_token,
+            "Content-Type": "application/json"
+        },
+        method: "PUT"
+    }).then((res) => {
+        let data = JSON.parse(res);
+        return data;
+    }).catch((err) => {
+        return err;
+    });
+};
 
 exports.main = function(params){
     return exports.getUser()
     .then(exports.getUserId)
     .then(exports.getUserDetails)
-    .then(exports.parseUserDetails)
-}
+    .then(exports.parseUserDetails);
+};
 
-exports.main()
+exports.main();

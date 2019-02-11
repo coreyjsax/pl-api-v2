@@ -47,7 +47,6 @@ exports.getDeliveryArea = function(store){
             tmp[i].lng = tmp[i].longitude;
             delete tmp[i].longitude;
             }
-            console.log(tmp)
             return tmp;
         }).catch((error) => {
             return error;
